@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 /**
@@ -18,6 +20,7 @@ public class Article implements Serializable {
     /**
      * 文章id
      */
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -56,6 +59,7 @@ public class Article implements Serializable {
     private Integer browse;
 
     /**
+     * 默认为已发布
      * 0表示草稿，1表示已发布，2表示取消发布
      */
     private Integer status;

@@ -1,3 +1,6 @@
+server:
+  servlet:
+    context-path: /admin
 spring:
   application:
     name: MerryCodes

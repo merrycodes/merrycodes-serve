@@ -1,34 +1,16 @@
 package com.merrycodes.enums;
 
-import lombok.Getter;
-
 /**
- * 响应编码枚举
+ * 枚举接口
  *
  * @author MerryCodes
- * @date 2020/3/31 22:54
+ * @date 2020/4/1 8:21
  */
-@Getter
-public enum CodeEnum {
-
+public interface CodeEnum {
     /**
-     * 200 表示请求成功
+     * 获取枚举的 code
+     *
+     * @return Integer 类型的 code
      */
-    SUCCESS(200, "succuss"),
-
-    /**
-     * -1 表示请求成功
-     */
-    FAIL(400, "fail"),
-
-    ;
-
-    private Integer code;
-
-    private String message;
-
-    CodeEnum(Integer code, String message) {
-        this.code = code;
-        this.message = message;
-    }
+    Integer getCode();
 }

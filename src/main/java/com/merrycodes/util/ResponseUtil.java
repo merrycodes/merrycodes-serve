@@ -1,67 +1,37 @@
 package com.merrycodes.util;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.merrycodes.enums.CodeEnum;
-import lombok.Getter;
+import com.merrycodes.enums.ResponseEnum;
+import com.merrycodes.vo.ResponseVo;
 
 /**
- * 统一返回前端对象
+ * 统一返回前端对象工具类
  *
  * @author MerryCodes
  * @date 2020/3/31 22:47
  */
-@Getter
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class ResponseUtil<T> {
+public class ResponseUtil {
 
-    private Integer code;
-
-    private String message;
-
-    private T data;
-
-    private ResponseUtil(Integer code) {
-        this.code = code;
+    public static <T> ResponseVo<T> success() {
+        return new ResponseVo<>(ResponseEnum.SUCCESS.getCode());
     }
 
-    private ResponseUtil(Integer code, String message) {
-        this.code = code;
-        this.message = message;
+    public static <T> ResponseVo<T> success(String message) {
+        return new ResponseVo<>(ResponseEnum.SUCCESS.getCode(), message);
     }
 
-    private ResponseUtil(Integer code, T data) {
-        this.code = code;
-        this.data = data;
+    public static <T> ResponseVo<T> success(T data) {
+        return new ResponseVo<>(ResponseEnum.SUCCESS.getCode(), data);
     }
 
-    private ResponseUtil(Integer code, String message, T data) {
-        this.code = code;
-        this.message = message;
-        this.data = data;
+    public static <T> ResponseVo<T> success(String message, T data) {
+        return new ResponseVo<>(ResponseEnum.SUCCESS.getCode(), message, data);
     }
 
-    public static <T> ResponseUtil<T> success() {
-        return new ResponseUtil<>(CodeEnum.SUCCESS.getCode());
+    public static <T> ResponseVo<T> fail() {
+        return new ResponseVo<>(ResponseEnum.FAIL.getCode());
     }
 
-    public static <T> ResponseUtil<T> success(String message) {
-        return new ResponseUtil<>(CodeEnum.SUCCESS.getCode(), message);
-    }
-
-    public static <T> ResponseUtil<T> success(T data) {
-        return new ResponseUtil<>(CodeEnum.SUCCESS.getCode(), data);
-    }
-
-
-    public static <T> ResponseUtil<T> success(String message, T data) {
-        return new ResponseUtil<>(CodeEnum.SUCCESS.getCode(), message, data);
-    }
-
-    public static <T> ResponseUtil<T> fail() {
-        return new ResponseUtil<>(CodeEnum.FAIL.getCode());
-    }
-
-    public static <T> ResponseUtil<T> fail(String message) {
-        return new ResponseUtil<>(CodeEnum.FAIL.getCode(), message);
+    public static <T> ResponseVo<T> fail(String message) {
+        return new ResponseVo<>(ResponseEnum.FAIL.getCode(), message);
     }
 }
