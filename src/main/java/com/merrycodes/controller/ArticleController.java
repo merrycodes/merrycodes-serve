@@ -8,9 +8,11 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.websocket.server.PathParam;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 文章
@@ -42,6 +44,20 @@ public class ArticleController {
             return ResponseUtil.fail("保存失败");
         }
         return ResponseUtil.success(article.getId());
+    }
+
+    /**
+     * 获取文章详情接口
+     *
+     * @param id 文章id
+     * @return 文章
+     */
+    @ApiOperation(value = "获取文章详情接口", notes = "获取文章详情接口")
+    @ApiImplicitParam(name = "文章id", value = "文章id", required = true, dataTypeClass = String.class)
+    @GetMapping("/{id}")
+    public ResponseVo<Article> info(@PathVariable("id") Integer id) {
+        Article article = articleService.getArticleInfo(id);
+        return ResponseUtil.success(article);
     }
 
 }

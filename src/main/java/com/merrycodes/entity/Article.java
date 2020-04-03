@@ -6,6 +6,7 @@ import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 /**
@@ -13,6 +14,7 @@ import lombok.Data;
  * @date 2020/3/30 15:36
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Article implements Serializable {
 
     private static final long serialVersionUID = 926744113667809796L;
