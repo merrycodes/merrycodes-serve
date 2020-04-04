@@ -9,7 +9,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @author Miracle.Lt
  * @date 2020/3/30 12:15
  */
-@EnableSwagger2
 @SpringBootApplication
 @MapperScan("com.merrycodes.mapper")
 public class MerryCodesServeApplication {
