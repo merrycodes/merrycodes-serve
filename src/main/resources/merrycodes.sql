@@ -15,4 +15,4 @@ create table article
     update_time     timestamp       not null default current_timestamp on update current_timestamp comment '文章更新时间，默认为当前时间',
     unique (title)
 ) engine = InnoDB
-  default charset = utf8
+  default charset = utf8mb4

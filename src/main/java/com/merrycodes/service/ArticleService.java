@@ -1,11 +1,8 @@
 package com.merrycodes.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.merrycodes.entity.Article;
-
-import java.util.List;
 
 /**
  * @author MerryCodes
@@ -21,22 +18,14 @@ public interface ArticleService extends IService<Article> {
      */
     Article selectArticleInfo(Integer id);
 
-
-    /**
-     * 获取文章实体类
-     *
-     * @return 文章列表实体类
-     */
-    List<Article> selectArticleList();
-
-
     /**
      * 获取文章实体类 (分页)
      *
-     * @param page    分页模型 {@link Page}
+     * @param current 当前页数
+     * @param size    当前分页总页数
      * @param article 文章实体类 {@link Article}
      * @return 分页 Page 对象接口 {@link IPage}
      */
-    IPage<Article> selectArticlePage(Page<Article> page, Article article);
+    IPage<Article> selectArticlePage(Integer current, Integer size, Article article);
 
 }

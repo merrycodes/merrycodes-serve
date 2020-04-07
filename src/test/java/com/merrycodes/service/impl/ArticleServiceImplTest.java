@@ -3,6 +3,7 @@ package com.merrycodes.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.merrycodes.entity.Article;
 import com.merrycodes.service.ArticleService;
+import com.merrycodes.vo.PaginationVo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * ArticleServiceImpl 单元测试
@@ -39,13 +41,18 @@ public class ArticleServiceImplTest {
     }
 
     @Test
-    public void getArticleList() {
-        List<Article> articleList = articleService.selectArticleList();
-        assertEquals(6, articleList.size());
+    public void selectArticlePage() {
+        IPage<Article> iPage = articleService.selectArticlePage(1, 10, new Article());
+        PaginationVo<Article> paginationVo = new PaginationVo<>(iPage);
+        assertTrue(paginationVo.getList().size() <= 10);
     }
 
     @Test
-    public void selectArticlePage() {
-
+    public void saveOrUpdate() {
+        Article article = new Article();
+        article.setId(10);
+        article.setStatus(2);
+        boolean update = articleService.saveOrUpdate(article);
+        assertTrue(update);
     }
 }

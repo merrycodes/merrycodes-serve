@@ -54,7 +54,7 @@ public class ArticleController {
      * @return 文章实体类
      */
     @ApiOperation(value = "获取文章详情接口", notes = "获取文章详情接口")
-    @ApiImplicitParam(name = "文章id", value = "文章id", required = true, dataTypeClass = String.class)
+    @ApiImplicitParam(name = "id", value = "文章id", required = true, dataTypeClass = String.class)
     @GetMapping("/{id}")
     public ResponseVo<Article> info(@PathVariable("id") Integer id) {
         Article article = articleService.selectArticleInfo(id);
@@ -68,12 +68,17 @@ public class ArticleController {
      * @return 文章列表实体类
      */
     @ApiOperation(value = "获取文章列表接口", notes = "获取文章列表接口")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "current", value = "当前页数", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "size", value = "当前分页总页数", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "article", value = "文章实体类", dataTypeClass = Article.class)
+    })
     @GetMapping
     public ResponseVo<PaginationVo<Article>> list(@RequestParam(value = "current", required = false, defaultValue = "1") Integer current,
-                                          @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
-                                          Article article) {
+                                                  @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
+                                                  Article article) {
         Page<Article> page = new Page<>(current, size);
-        IPage<Article> iPage = articleService.selectArticlePage(page, article);
+        IPage<Article> iPage = articleService.selectArticlePage(current, size, article);
         return ResponseUtil.success(new PaginationVo<>(iPage));
     }
 
