@@ -3,6 +3,7 @@ package com.merrycodes.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.merrycodes.constant.WebConstant;
 import io.swagger.annotations.ApiModel;

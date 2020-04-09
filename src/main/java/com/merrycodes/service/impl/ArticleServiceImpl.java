@@ -1,7 +1,6 @@
 package com.merrycodes.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -16,8 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * @author MerryCodes
  * @date 2020/3/30 15:56
@@ -29,6 +26,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     private final ArticleMapper articleMapper;
 
+    /**
+     * 根据id查询文章
+     *
+     * @param id 文章id
+     * @return 文章实体类 {@link Article}
+     */
     @Override
     public Article selectArticleInfo(Integer id) {
         LambdaQueryWrapper<Article> wrapper = Wrappers.<Article>lambdaQuery()
@@ -40,7 +43,18 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     }
 
+    /**
+     * 条件查询获取文章列表
+     * 使用 orderByDesc / orderByDesc 编译器会有警告 使用注解抹去
+     *
+     * @param current 当前页数
+     * @param size    当前分页总页数
+     * @param article 文章实体类 {@link Article}
+     * @return 分页 Page 对象接口 {@link IPage}
+     * @see <a href="https://github.com/baomidou/mybatis-plus/issues/467"></a>
+     */
     @Override
+    @SuppressWarnings("unchecked")
     public IPage<Article> selectArticlePage(Integer current, Integer size, Article article) {
         Page<Article> page = new Page<>(current, size);
         LambdaQueryWrapper<Article> wrapper = Wrappers.<Article>lambdaQuery()
@@ -48,12 +62,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 .like(StringUtils.isNotEmpty(article.getTitle()), Article::getTitle, article.getTitle())
                 .like(StringUtils.isNotEmpty(article.getMdContent()), Article::getMdContent, article.getMdContent())
                 .like(StringUtils.isNotEmpty(article.getTags()), Article::getTags, article.getTags())
-                .like(StringUtils.isNotEmpty(article.getCategory()), Article::getCategory, article.getCategory());
-        if (WebConstant.ASC.equals(article.getSort())) {
-            wrapper.orderByAsc(Article::getUpdateTime);
-        } else {
-            wrapper.orderByDesc(Article::getUpdateTime);
-        }
+                .like(StringUtils.isNotEmpty(article.getCategory()), Article::getCategory, article.getCategory())
+                .orderByAsc(WebConstant.ASC.equals(article.getSort()), Article::getUpdateTime)
+                .orderByDesc(WebConstant.DESC.equals(article.getSort()), Article::getUpdateTime);
         System.out.println(article);
         return articleMapper.selectPage(page, wrapper);
     }
