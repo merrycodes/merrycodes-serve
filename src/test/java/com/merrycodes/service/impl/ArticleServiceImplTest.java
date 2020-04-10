@@ -1,7 +1,11 @@
 package com.merrycodes.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.merrycodes.entity.Article;
+import com.merrycodes.mapper.ArticleMapper;
 import com.merrycodes.service.ArticleService;
 import com.merrycodes.vo.PaginationVo;
 import org.junit.Test;
@@ -10,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.awt.*;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -28,9 +34,16 @@ public class ArticleServiceImplTest {
 
     private ArticleService articleService;
 
+    private ArticleMapper articleMapper;
+
     @Autowired
     public void setArticleService(ArticleService articleService) {
         this.articleService = articleService;
+    }
+
+    @Autowired
+    public void setArticleMapper(ArticleMapper articleMapper) {
+        this.articleMapper = articleMapper;
     }
 
     @Test
@@ -54,5 +67,15 @@ public class ArticleServiceImplTest {
         article.setStatus(2);
         boolean update = articleService.saveOrUpdate(article);
         assertTrue(update);
+    }
+
+    @Test
+    public void test() {
+//        Integer count = articleService.lambdaQuery().like(Article::getTags, "Banana").count();
+        QueryWrapper<Article> wrapper = new QueryWrapper<>();
+        wrapper.select("count(1) count").like("tags", "Banana");
+        List<Map<String, Object>> mapList = articleMapper.selectMaps(wrapper);
+        System.out.println(mapList);
+//        assertEquals(new Integer(10), count);
     }
 }

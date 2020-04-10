@@ -2,18 +2,20 @@ package com.merrycodes.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.merrycodes.constant.WebConstant;
+import com.merrycodes.constant.SortMapConstant;
 import com.merrycodes.entity.Article;
 import com.merrycodes.mapper.ArticleMapper;
 import com.merrycodes.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * @author MerryCodes
@@ -62,10 +64,19 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 .like(StringUtils.isNotEmpty(article.getTitle()), Article::getTitle, article.getTitle())
                 .like(StringUtils.isNotEmpty(article.getMdContent()), Article::getMdContent, article.getMdContent())
                 .like(StringUtils.isNotEmpty(article.getTags()), Article::getTags, article.getTags())
-                .like(StringUtils.isNotEmpty(article.getCategory()), Article::getCategory, article.getCategory())
-                .orderByAsc(WebConstant.ASC.equals(article.getSort()), Article::getUpdateTime)
-                .orderByDesc(WebConstant.DESC.equals(article.getSort()), Article::getUpdateTime);
-        System.out.println(article);
+                .like(StringUtils.isNotEmpty(article.getCategory()), Article::getCategory, article.getCategory());
+        // 前端传来的排序数据 example sortMap = {name=update, sort=desc})
+        Map<String, String> sortMap = article.getSort();
+        // 判断是否等于 name 是否等于 update 如果是则 order by updateTime 否者 order by createTime
+        if (StringUtils.equals(SortMapConstant.UPDATE_TIME, sortMap.get(SortMapConstant.NAME_KEY))) {
+            // 判断前端传来按 顺序/倒叙 排序
+            wrapper.orderByAsc(StringUtils.equals(SortMapConstant.ASC, sortMap.get(SortMapConstant.SORT_KEY)), Article::getUpdateTime)
+                    .orderByDesc(StringUtils.equals(SortMapConstant.DESC, sortMap.get(SortMapConstant.SORT_KEY)), Article::getUpdateTime);
+        } else {
+            // 同上
+            wrapper.orderByAsc(StringUtils.equals(SortMapConstant.ASC, sortMap.get(SortMapConstant.SORT_KEY)), Article::getCreateTime)
+                    .orderByDesc(StringUtils.equals(SortMapConstant.DESC, sortMap.get(SortMapConstant.SORT_KEY)), Article::getCreateTime);
+        }
         return articleMapper.selectPage(page, wrapper);
     }
 

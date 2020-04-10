@@ -3,16 +3,15 @@ package com.merrycodes.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.merrycodes.constant.WebConstant;
+import com.merrycodes.constant.SortMapConstant;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.experimental.Tolerate;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * 文章实体类
@@ -96,11 +95,14 @@ public class Article implements Serializable {
     private LocalDateTime updateTime;
 
     /**
-     * 列表排序 （default = desc）
-     * 排序字段为更新时间
+     * order by updateTime desc
+     * 默认值 {name=update, sort=desc}
+     * 前端传来是一个对象，使用 Map 接收
+     *
+     * @see SortMapConstant
      */
     @TableField(exist = false)
-    @ApiModelProperty("列表排序 （default = desc）")
-    private String sort = WebConstant.DESC;
+    @ApiModelProperty(value = "列表排序 default = {name=update, sort=desc})",example = "{\"name\":\"update\", \"sort\":\"desc\"}")
+    private Map<String, String> sort;
 
 }
