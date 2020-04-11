@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.merrycodes.entity.Article;
 
 /**
+ * 文章service接口
+ *
  * @author MerryCodes
  * @date 2020/3/30 15:56
  */
@@ -19,7 +21,7 @@ public interface ArticleService extends IService<Article> {
     Article selectArticleInfo(Integer id);
 
     /**
-     * 获取文章实体类 (分页)
+     * 文章分页查询 (分页)
      *
      * @param current 当前页数
      * @param size    当前分页总页数

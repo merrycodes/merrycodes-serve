@@ -19,8 +19,8 @@ import org.springframework.context.annotation.Configuration;
 public class DruidConfig {
 
     /**
-     * Bean给创建的时候执行 {@link DruidDataSource#init()}
-     * Bean给销毁的时候执行 {@link DruidDataSource#close()}
+     * Bean给创建的时候执行 init()方法 {@link DruidDataSource#init()}
+     * Bean给销毁的时候执行 close()方法 {@link DruidDataSource#close()}
      * 将自定义的 Druid 数据源添加到容器中，将配置文件绑定到 DruidDataSource 类中
      *
      * @return 放回Druid的数据源

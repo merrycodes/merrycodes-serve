@@ -5,6 +5,8 @@ import com.merrycodes.entity.Article;
 import org.springframework.stereotype.Repository;
 
 /**
+ * 文章 CRUD操作
+ *
  * @author MerryCodes
  * @date 2020/3/30 15:54
  */

@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 /**
+ * 文章service接口实现类
+ *
  * @author MerryCodes
  * @date 2020/3/30 15:56
  */

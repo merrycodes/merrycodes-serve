@@ -31,7 +31,7 @@ public class ArticleController {
     private final ArticleService articleService;
 
     /**
-     * 保存或更新到数据库中
+     * 保存或更新文章
      * TODO 后期将改为先保存到Redis中，然后开启一个定时任务再保存到数据库中
      *
      * @param article 文章实体类
@@ -42,10 +42,10 @@ public class ArticleController {
     @PostMapping("save")
     public ResponseVo<Integer> save(Article article) {
         if (!articleService.saveOrUpdate(article)) {
-            log.info("【ArticleController#save 文章保存/更新失败】");
+            log.info("【save 文章保存/更新失败】");
             return ResponseUtil.fail(article.getId() == null ? "保存失败" : "更新失败");
         }
-        log.info("【save 文章保存/更新失败 id={}】", article.getId());
+        log.info("【save 文章保存/更新 成功】 id={}", article.getId());
         return ResponseUtil.success(article.getId());
     }
 
@@ -60,7 +60,7 @@ public class ArticleController {
     @GetMapping("/{id}")
     public ResponseVo<Article> info(@PathVariable("id") Integer id) {
         Article article = articleService.selectArticleInfo(id);
-        log.info("info 获取文章详情 Article={}",article);
+        log.info("info 获取文章详情 Article={}", article);
         return ResponseUtil.success(article);
     }
 
@@ -81,7 +81,7 @@ public class ArticleController {
                                                   @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
                                                   Article article) {
         IPage<Article> iPage = articleService.selectArticlePage(current, size, article);
-        log.info("list 获取文章列表 总条数={} 当前分页总页数={} 当前页数={}",iPage.getSize(), iPage.getCurrent(),iPage.getCurrent());
+        log.info("【list 获取文章列表】 总条数={} 当前分页总页数={} 当前页数={}", iPage.getTotal(), iPage.getSize(), iPage.getCurrent());
         return ResponseUtil.success(new PaginationVo<>(iPage));
     }
 
