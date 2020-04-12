@@ -102,7 +102,8 @@ public class Article implements Serializable {
      * @see SortMapConstant
      */
     @TableField(exist = false)
-    @ApiModelProperty(value = "列表排序 default = {name=update, sort=desc})",example = "{\"name\":\"update\", \"sort\":\"desc\"}")
+    @ApiModelProperty(value = "列表排序 default = {\"name\":\"update\", \"sort\":\"desc\"})",
+            example = "{\"name\":\"update\", \"sort\":\"desc\"}")
     private Map<String, String> sort;
 
 }

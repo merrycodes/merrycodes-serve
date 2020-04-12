@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 文章标签
  *
@@ -58,13 +60,29 @@ public class TagsController {
     @ApiOperation(value = "获取文章标签列表接口", notes = "获取文章标签列表接口")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页数", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "size", value = "当前分页总页数", dataTypeClass = Integer.class)
+            @ApiImplicitParam(name = "size", value = "当前分页总页数", dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "tags", value = "文章标签实体类", dataTypeClass = Tags.class)
     })
     @GetMapping
-    public ResponseVo<PaginationVo<Tags>> tagsPage(@RequestParam(value = "current", defaultValue = "1") Integer current,
-                                                   @RequestParam(value = "size", defaultValue = "10") Integer size) {
-        IPage<Tags> iPage = tagsService.selectTagsPageWithCount(current, size);
+    public ResponseVo<PaginationVo<Tags>> selectTagsPage(@RequestParam(value = "current", defaultValue = "1") Integer current,
+                                                         @RequestParam(value = "size", defaultValue = "10") Integer size,
+                                                         Tags tags) {
+        IPage<Tags> iPage = tagsService.selectTagsPageWithCount(current, size, tags);
         log.info("【list 获取文章列表】 总条数={} 当前分页总页数={} 当前页数={}", iPage.getTotal(), iPage.getSize(), iPage.getCurrent());
         return ResponseUtil.success(new PaginationVo<>(iPage));
+    }
+
+    @ApiOperation(value = "获取文章标签名字的全部集合（用于文章列表查询的选线）", notes = "获取文章标签名字的全部集合（用于文章列表查询的选线）")
+    @GetMapping("/list")
+    public ResponseVo<List<String>> tagsNameList() {
+        List<String> list = tagsService.selectTagsNameList();
+        return ResponseUtil.success(list);
+    }
+
+    @ApiOperation(value = "获取生效的文章标签名字的集合（用于新建文章的选项）", notes = "获取生效的文章标签名字的集合（用于新建文章的选项）")
+    @GetMapping("/stausList")
+    public ResponseVo<List<String>> tagsNameListByStaus() {
+        List<String> list = tagsService.selectTagsNameListByStatus();
+        return ResponseUtil.success(list);
     }
 }

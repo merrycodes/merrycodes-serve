@@ -3,16 +3,29 @@
 <mapper namespace="com.merrycodes.mapper.TagsMapper">
 
     <!-- 使用find_in_set(b.name, a.tags)也可以，网上查看效率都差不多（没有足够多的数据测试） -->
-    <select id="selectTagsPageWithCont" resultType="com.merrycodes.entity.Tags">
-        SELECT a.id,
-               a.name,
-               a.status,
-               count(1) AS count,
-               a.create_time,
-               a.update_time
-        FROM tags a,
-             article b
-        WHERE locate(a.name, b.tags)
-        Group By name
+    <select id="selectTagsPageWithCont" resultType="com.merrycodes.entity.Tags" parameterType="java.util.Map">
+        SELECT a.id, a.name, a.status, count(b.id) AS count, a.create_time, a.update_time
+        FROM tags a left join article b
+        on locate(a.name, b.tags)
+        <where>
+            <if test="staus != null">
+                and a.status = #{staus}
+            </if>
+            <if test="name != null">
+                and locate(#{name},a.name)
+            </if>
+        </where>
+        group by a.name
+        ${ew.customSqlSegment}
+        <if test="countSort != null">
+            <choose>
+                <when test="countSort == 'asc'">
+                    order by count
+                </when>
+                <otherwise>
+                    order by count desc
+                </otherwise>
+            </choose>
+        </if>
     </select>
 </mapper>
