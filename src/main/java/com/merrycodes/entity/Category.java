@@ -1,6 +1,5 @@
 package com.merrycodes.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -12,55 +11,53 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
- * 标签实体类
+ * 分类实体类
  *
  * @author MerryCodes
- * @date 2020/4/11 9:58
+ * @date 2020/4/13 22:58
  */
-@ApiModel(description = "标签实体类")
+@ApiModel(description = "文章分类实体类")
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Tags {
+public class Category {
 
     /**
-     * 文章标签id
+     * 文章分类id
      */
-    @TableId(type = IdType.AUTO)
-    @ApiModelProperty("文章标签id")
+    @ApiModelProperty("文章分类id")
     private Integer id;
 
     /**
-     * 文章标签名
+     * 文章分类名
      */
-    @ApiModelProperty("文章标签名")
+    @ApiModelProperty("文章分类名")
     private String name;
 
     /**
-     * 文章标签状态
-     * 0 表示标签失效，1 表示标签生效
+     * 文章分类状态
+     * 0 表示分类失效，1 表示分类生效
      *
      * @see com.merrycodes.enums.StatusEnum
      */
-    @ApiModelProperty("文章标签状态")
+    @ApiModelProperty("文章分类状态")
     private Integer status;
 
     /**
-     * 文章标签文章数
+     * 文章分类状态
      */
-    @TableField(exist = false)
-    @ApiModelProperty("文章标签文章数")
+    @ApiModelProperty("文章分类文章数")
     private Integer count;
 
     /**
-     * 文章标签创建时间，默认为当前时间
+     * 文章分类创建时间，默认为当前时间
      */
-    @ApiModelProperty("文章标签创建时间")
+    @ApiModelProperty("文章分类创建时间")
     private LocalDateTime createTime;
 
     /**
-     * 文章标签更新时间，默认为当前时间
+     * 文章分类更新时间，默认为当前时间
      */
-    @ApiModelProperty("文章标签更新时间")
+    @ApiModelProperty("文章分类更新时间")
     private LocalDateTime updateTime;
 
     /**
@@ -73,5 +70,5 @@ public class Tags {
     @TableField(exist = false)
     @ApiModelProperty(value = "列表排序 default = {\"name\":\"update\", \"sort\":\"desc\"})",
             example = "{\"name\":\"update\", \"sort\":\"desc\"}")
-    private Map<String, String> sort;
+    private Map<String, String> map;
 }

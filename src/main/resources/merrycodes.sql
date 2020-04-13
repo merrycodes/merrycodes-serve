@@ -31,3 +31,16 @@ create table tags
 ) ENGINE = InnoDB
   DEFAULT CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
+
+# 分类
+create table category
+(
+    id          INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT COMMENT '分类id',
+    name        VARCHAR(255)        NOT NULL COMMENT '文章分类',
+    status      INTEGER             NOT NULL DEFAULT 1 COMMENT '0表示失效，1表示生效',
+    create_time TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '文章分类创建时间，默认为当前时间',
+    update_time TIMESTAMP           NOT NULL Default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '文章分类更新时间，默认为当前时间',
+    UNIQUE (name)
+) ENGINE = InnoDB
+  DEFAULT CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci

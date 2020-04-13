@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.merrycodes.constant.SortMapConstant;
 import com.merrycodes.entity.Tags;
-import com.merrycodes.enums.TagsEnum;
+import com.merrycodes.enums.StatusEnum;
 import com.merrycodes.mapper.TagsMapper;
 import com.merrycodes.service.TagsService;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +71,7 @@ public class TagsServiceImpl extends ServiceImpl<TagsMapper, Tags> implements Ta
     @Override
     public List<String> selectTagsNameList() {
         LambdaQueryWrapper<Tags> wrapper = Wrappers.<Tags>lambdaQuery()
-                .select(Tags::getName);
+                .select(Tags::getName).orderByAsc(Tags::getName);
         List<Tags> tagsList = tagsMapper.selectList(wrapper);
         return tagsList.stream().map(Tags::getName).collect(Collectors.toList());
     }
@@ -79,8 +79,8 @@ public class TagsServiceImpl extends ServiceImpl<TagsMapper, Tags> implements Ta
     @Override
     public List<String> selectTagsNameListByStatus() {
         LambdaQueryWrapper<Tags> wrapper = Wrappers.<Tags>lambdaQuery()
-                .select(Tags::getName)
-                .eq(Tags::getStatus, TagsEnum.VALID.getCode());
+                .select(Tags::getName).eq(Tags::getStatus, StatusEnum.VALID.getCode())
+                .orderByAsc(Tags::getName);
         List<Tags> tagsList = tagsMapper.selectList(wrapper);
         return tagsList.stream().map(Tags::getName).collect(Collectors.toList());
     }

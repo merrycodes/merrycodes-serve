@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.merrycodes.constant.SortMapConstant;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -99,7 +98,7 @@ public class Article implements Serializable {
      * 默认值 {name=update, sort=desc}
      * 前端传来是一个对象，使用 Map 接收
      *
-     * @see SortMapConstant
+     * @see com.merrycodes.constant.SortMapConstant
      */
     @TableField(exist = false)
     @ApiModelProperty(value = "列表排序 default = {\"name\":\"update\", \"sort\":\"desc\"})",

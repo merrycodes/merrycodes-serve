@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.merrycodes.mapper.TagsMapper">
+<mapper namespace="com.merrycodes.mapper.CategoryMapper">
 
     <!-- 使用find_in_set(b.name, a.tags)也可以，网上查看效率都差不多（没有足够多的数据测试） -->
-    <select id="selectTagsPageWithCont" resultType="com.merrycodes.entity.Tags" parameterType="java.util.Map">
-        SELECT a.id, a.name, a.status, count(b.id) AS count, a.create_time, a.update_time
-        FROM tags a
-        LEFT JOIN article b ON locate(a.name, b.tags)
+    <select id="selectCategoryPageWithCont" resultType="com.merrycodes.entity.Category" parameterType="java.util.Map">
+        SELECT a.id, a.status, COUNT(b.id) AS count, a.create_time, a.update_time
+        FROM category a
+        LEFT JOIN article b ON a.name = b.category
         <where>
             <if test="staus != null">
                 AND a.status = #{staus}

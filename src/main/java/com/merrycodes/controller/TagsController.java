@@ -43,10 +43,10 @@ public class TagsController {
     @PostMapping("/save")
     public ResponseVo<Integer> saveOrUpdate(Tags tags) {
         if (!tagsService.saveOrUpdate(tags)) {
-            log.info("【save 文章保存/更新 失败】");
+            log.info("【saveOrUpdate 文章保存/更新 失败】");
             return ResponseUtil.fail(tags.getId() == null ? "保存失败" : "更新失败");
         }
-        log.info("【save 文章保存/更新 成功】 id={}", tags.getId());
+        log.info("【saveOrUpdate 文章保存/更新 成功】 id={}", tags.getId());
         return ResponseUtil.success(tags.getId());
     }
 
@@ -68,7 +68,7 @@ public class TagsController {
                                                          @RequestParam(value = "size", defaultValue = "10") Integer size,
                                                          Tags tags) {
         IPage<Tags> iPage = tagsService.selectTagsPageWithCount(current, size, tags);
-        log.info("【list 获取文章列表】 总条数={} 当前分页总页数={} 当前页数={}", iPage.getTotal(), iPage.getSize(), iPage.getCurrent());
+        log.info("【selectTagsPage 获取文章列表】 总条数={} 当前分页总页数={} 当前页数={}", iPage.getTotal(), iPage.getSize(), iPage.getCurrent());
         return ResponseUtil.success(new PaginationVo<>(iPage));
     }
 
@@ -76,6 +76,7 @@ public class TagsController {
     @GetMapping("/list")
     public ResponseVo<List<String>> tagsNameList() {
         List<String> list = tagsService.selectTagsNameList();
+        log.info("【tagsNameList 获取文章标签名 list={}】", list);
         return ResponseUtil.success(list);
     }
 
@@ -83,6 +84,7 @@ public class TagsController {
     @GetMapping("/stausList")
     public ResponseVo<List<String>> tagsNameListByStaus() {
         List<String> list = tagsService.selectTagsNameListByStatus();
+        log.info("【tagsNameListByStaus 获取文章标签名（by status） list={}】", list);
         return ResponseUtil.success(list);
     }
 }
