@@ -1,5 +1,6 @@
 package com.merrycodes.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,6 +8,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -19,11 +21,14 @@ import java.util.Map;
 @ApiModel(description = "文章分类实体类")
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Category {
+public class Category implements Serializable {
+
+    private static final long serialVersionUID = -5089249540992174478L;
 
     /**
      * 文章分类id
      */
+    @TableId(type = IdType.AUTO)
     @ApiModelProperty("文章分类id")
     private Integer id;
 
@@ -43,8 +48,9 @@ public class Category {
     private Integer status;
 
     /**
-     * 文章分类状态
+     * 文章分类文章数
      */
+    @TableField(exist = false)
     @ApiModelProperty("文章分类文章数")
     private Integer count;
 
@@ -70,5 +76,5 @@ public class Category {
     @TableField(exist = false)
     @ApiModelProperty(value = "列表排序 default = {\"name\":\"update\", \"sort\":\"desc\"})",
             example = "{\"name\":\"update\", \"sort\":\"desc\"}")
-    private Map<String, String> map;
+    private Map<String, String> sort;
 }

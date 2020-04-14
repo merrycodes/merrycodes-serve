@@ -33,7 +33,7 @@ public class TagsController {
     private final TagsService tagsService;
 
     /**
-     * 保存或更新文章标签
+     * 保存或更新文章标签接口
      *
      * @param tags 文章标签实体类 {@link Tags}
      * @return 文章标签id
@@ -51,11 +51,12 @@ public class TagsController {
     }
 
     /**
-     * 文章标签列表分页查询
+     * 文章标签列表分页查询接口
      *
      * @param current 当前页数
-     * @param size    当前分页总页数
-     * @return 文章列表实体类
+     * @param size    当前分页总条数
+     * @param tags    文章标签实体类
+     * @return 文章标签列表实体类
      */
     @ApiOperation(value = "获取文章标签列表接口", notes = "获取文章标签列表接口")
     @ApiImplicitParams(value = {

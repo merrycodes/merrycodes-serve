@@ -1,0 +1,97 @@
+package com.merrycodes.service.impl;
+
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.merrycodes.constant.SortMapConstant;
+import com.merrycodes.entity.Category;
+import com.merrycodes.enums.StatusEnum;
+import com.merrycodes.mapper.CategoryMapper;
+import com.merrycodes.service.CategoryService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+/**
+ * 文章分类service接口实现类
+ *
+ * @author MerryCodes
+ * @date 2020/4/14 8:49
+ */
+@Slf4j
+@Service
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> implements CategoryService {
+
+    private final CategoryMapper categoryMapper;
+
+    /**
+     * 文章分类分页查询 包括每个分类文章的数目
+     * 使用 orderByDesc / orderByDesc 编译器会有警告 使用注解抹去
+     *
+     * @param current  当前页数
+     * @param size     当前分页总页数
+     * @param category 文章分类实体类（查询）{@link Category}
+     * @return 分页 Page 对象接口 {@link IPage}
+     * @see <a href="https://github.com/baomidou/mybatis-plus/issues/467"></a>
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public IPage<Category> selectCategoryPageWithCount(Integer current, Integer size, Category category) {
+        Page<Category> categoryPage = new Page<>(current, size);
+        LambdaQueryWrapper<Category> wrapper = Wrappers.lambdaQuery();
+        // 前端传来的排序数据 example sortMap = {name=update, sort=desc})
+        Map<String, String> sortMap = category.getSort();
+        // count 字段排序
+        String countSort = null;
+        // 判断是否等于 name 是否等于 update 如果是则 order by updateTime 否者 order by createTime
+        if (StringUtils.equals(SortMapConstant.CREATE_TIME, sortMap.get(SortMapConstant.NAME_KEY))) {
+            // 判断前端传来按 顺序/倒叙 排序
+            wrapper.orderByAsc(StringUtils.equals(SortMapConstant.ASC, sortMap.get(SortMapConstant.SORT_KEY)), Category::getCreateTime)
+                    .orderByDesc(StringUtils.equals(SortMapConstant.DESC, sortMap.get(SortMapConstant.SORT_KEY)), Category::getCreateTime);
+        } else if (StringUtils.equals(SortMapConstant.UPDATE_TIME, sortMap.get(SortMapConstant.NAME_KEY))) {
+            // 同上
+            wrapper.orderByAsc(StringUtils.equals(SortMapConstant.ASC, sortMap.get(SortMapConstant.SORT_KEY)), Category::getUpdateTime)
+                    .orderByDesc(StringUtils.equals(SortMapConstant.DESC, sortMap.get(SortMapConstant.SORT_KEY)), Category::getUpdateTime);
+        } else {
+            countSort = sortMap.get(SortMapConstant.SORT_KEY);
+        }
+        return categoryMapper.selectCategoryPageWithCont(categoryPage, wrapper, countSort, category.getStatus(), category.getName());
+    }
+
+    /**
+     * 获取文章分类名的全部集合（用于文章列表查询的选项）
+     *
+     * @return 文章分类名集合
+     */
+    @Override
+    public List<String> selectCategoryNameList() {
+        LambdaQueryWrapper<Category> wrapper = Wrappers.<Category>lambdaQuery()
+                .select(Category::getName).orderByAsc(Category::getName);
+        List<Category> categoryList = categoryMapper.selectList(wrapper);
+        return categoryList.stream().map(Category::getName).collect(Collectors.toList());
+    }
+
+    /**
+     * 获取生效的文章分类名的集合（用于新建文章的选项）
+     *
+     * @return 文章分类名集合
+     */
+    @Override
+    public List<String> selectCategoryNameListByStatus() {
+        LambdaQueryWrapper<Category> wrapper = Wrappers.<Category>lambdaQuery()
+                .select(Category::getName).eq(Category::getStatus, StatusEnum.VALID.getCode())
+                .orderByAsc(Category::getName);
+        List<Category> categoryList = categoryMapper.selectList(wrapper);
+        return categoryList.stream().map(Category::getName).collect(Collectors.toList());
+    }
+}

@@ -39,7 +39,7 @@ public class TagsServiceImpl extends ServiceImpl<TagsMapper, Tags> implements Ta
      * 使用 orderByDesc / orderByDesc 编译器会有警告 使用注解抹去
      *
      * @param current 当前页数
-     * @param size    当前分页总页数
+     * @param size    当前分页总条数
      * @param tags    文章实体类 （查询）{@link Tags}
      * @return 分页 Page 对象接口 {@link IPage}
      * @see <a href="https://github.com/baomidou/mybatis-plus/issues/467"></a>
@@ -48,7 +48,7 @@ public class TagsServiceImpl extends ServiceImpl<TagsMapper, Tags> implements Ta
     @SuppressWarnings("unchecked")
     public IPage<Tags> selectTagsPageWithCount(Integer current, Integer size, Tags tags) {
         Page<Tags> tagsPage = new Page<>(current, size);
-        LambdaQueryWrapper<Tags> wrapper = Wrappers.<Tags>lambdaQuery();
+        LambdaQueryWrapper<Tags> wrapper = Wrappers.lambdaQuery();
         // 前端传来的排序数据 example sortMap = {name=update, sort=desc})
         Map<String, String> sortMap = tags.getSort();
         // count 字段排序

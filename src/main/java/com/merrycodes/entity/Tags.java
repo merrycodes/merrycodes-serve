@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -20,7 +21,9 @@ import java.util.Map;
 @ApiModel(description = "标签实体类")
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Tags {
+public class Tags implements Serializable {
+
+    private static final long serialVersionUID = 5439906147142478578L;
 
     /**
      * 文章标签id

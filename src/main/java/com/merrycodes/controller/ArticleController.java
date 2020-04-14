@@ -68,6 +68,9 @@ public class ArticleController {
      * 获取文章列表接口
      * TODO 后期在Service层,把查询到的数据保存到Redis中
      *
+     * @param current 当前页数
+     * @param size    当前分页总条数
+     * @param article 文章实体类
      * @return 文章列表实体类
      */
     @ApiOperation(value = "获取文章列表接口", notes = "获取文章列表接口")
