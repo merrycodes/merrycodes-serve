@@ -1,6 +1,6 @@
 package com.merrycodes.mapper;
 
-import com.merrycodes.vo.CategoryVo;
+import com.merrycodes.model.vo.CategoryVo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.merrycodes.enums;
+package com.merrycodes.constant.enums;
 
 import lombok.Getter;
 

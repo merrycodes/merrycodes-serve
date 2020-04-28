@@ -5,12 +5,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.merrycodes.constant.SortMapConstant;
-import com.merrycodes.entity.Tags;
-import com.merrycodes.enums.StatusEnum;
+import com.merrycodes.constant.consist.SortMapConsist;
+import com.merrycodes.model.entity.Tags;
+import com.merrycodes.constant.enums.StatusEnum;
 import com.merrycodes.mapper.TagsMapper;
-import com.merrycodes.service.TagsService;
-import com.merrycodes.vo.TagsVo;
+import com.merrycodes.service.intf.TagsService;
+import com.merrycodes.model.vo.TagsVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -54,17 +54,19 @@ public class TagsServiceImpl extends ServiceImpl<TagsMapper, Tags> implements Ta
         Map<String, String> sortMap = tags.getSort();
         // count 字段排序
         String countSort = null;
-        // 判断是否等于 name 是否等于 update 如果是则 order by updateTime 否者 order by createTime
-        if (StringUtils.equals(SortMapConstant.UPDATE_TIME, sortMap.get(SortMapConstant.NAME_KEY))) {
-            // 判断前端传来按 顺序/倒叙 排序
-            wrapper.orderByAsc(StringUtils.equals(SortMapConstant.ASC, sortMap.get(SortMapConstant.SORT_KEY)), Tags::getUpdateTime)
-                    .orderByDesc(StringUtils.equals(SortMapConstant.DESC, sortMap.get(SortMapConstant.SORT_KEY)), Tags::getUpdateTime);
-        } else if (StringUtils.equals(SortMapConstant.CREATE_TIME, sortMap.get(SortMapConstant.NAME_KEY))) {
-            // 同上
-            wrapper.orderByAsc(StringUtils.equals(SortMapConstant.ASC, sortMap.get(SortMapConstant.SORT_KEY)), Tags::getCreateTime)
-                    .orderByDesc(StringUtils.equals(SortMapConstant.DESC, sortMap.get(SortMapConstant.SORT_KEY)), Tags::getCreateTime);
-        } else {
-            countSort = sortMap.get(SortMapConstant.SORT_KEY);
+        if (sortMap != null) {
+            // 判断是否等于 name 是否等于 update 如果是则 order by updateTime 否者 order by createTime
+            if (StringUtils.equals(SortMapConsist.UPDATE_TIME, sortMap.get(SortMapConsist.NAME_KEY))) {
+                // 判断前端传来按 顺序/倒叙 排序
+                wrapper.orderByAsc(StringUtils.equals(SortMapConsist.ASC, sortMap.get(SortMapConsist.SORT_KEY)), Tags::getUpdateTime)
+                        .orderByDesc(StringUtils.equals(SortMapConsist.DESC, sortMap.get(SortMapConsist.SORT_KEY)), Tags::getUpdateTime);
+            } else if (StringUtils.equals(SortMapConsist.CREATE_TIME, sortMap.get(SortMapConsist.NAME_KEY))) {
+                // 同上
+                wrapper.orderByAsc(StringUtils.equals(SortMapConsist.ASC, sortMap.get(SortMapConsist.SORT_KEY)), Tags::getCreateTime)
+                        .orderByDesc(StringUtils.equals(SortMapConsist.DESC, sortMap.get(SortMapConsist.SORT_KEY)), Tags::getCreateTime);
+            } else {
+                countSort = sortMap.get(SortMapConsist.SORT_KEY);
+            }
         }
         return tagsMapper.selectTagsPageWithCont(tagsPage, wrapper, countSort, tags.getStatus(), tags.getName());
     }

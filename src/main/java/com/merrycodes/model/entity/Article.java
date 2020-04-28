@@ -1,9 +1,10 @@
-package com.merrycodes.entity;
+package com.merrycodes.model.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.merrycodes.constant.consist.SortMapConsist;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -82,6 +83,14 @@ public class Article implements Serializable {
     private Integer status;
 
     /**
+     * 默认为true
+     * 文章是否可以评论
+     */
+    @ApiModelProperty("文章是否可以评论，默认未ture")
+    private Boolean allowComment;
+
+
+    /**
      * 文章创建时间，默认为当前时间
      */
     @ApiModelProperty("文章创建时间，默认为当前时间")
@@ -98,7 +107,7 @@ public class Article implements Serializable {
      * 默认值 {name=update, sort=desc}
      * 前端传来是一个对象，使用 Map 接收
      *
-     * @see com.merrycodes.constant.SortMapConstant
+     * @see SortMapConsist
      */
     @TableField(exist = false)
     @ApiModelProperty(value = "列表排序 default = {\"name\":\"update\", \"sort\":\"desc\"})",

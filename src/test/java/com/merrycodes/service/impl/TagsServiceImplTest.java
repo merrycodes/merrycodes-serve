@@ -1,11 +1,9 @@
 package com.merrycodes.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.merrycodes.entity.Tags;
-import com.merrycodes.service.TagsService;
-import com.merrycodes.vo.PaginationVo;
+import com.merrycodes.model.entity.Tags;
+import com.merrycodes.service.intf.TagsService;
+import com.merrycodes.model.vo.PaginationVo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.merrycodes.vo;
+package com.merrycodes.model.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;

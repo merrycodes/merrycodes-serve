@@ -1,4 +1,4 @@
-package com.merrycodes.constant;
+package com.merrycodes.constant.consist;
 
 /**
  * 排序常量
@@ -6,7 +6,7 @@ package com.merrycodes.constant;
  * @author MerryCodes
  * @date 2020/4/5 11:31
  */
-public interface SortMapConstant {
+public interface SortMapConsist {
 
     /**
      * 顺序
