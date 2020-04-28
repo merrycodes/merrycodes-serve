@@ -1,4 +1,4 @@
-package com.merrycodes.controller;
+package com.merrycodes.controller.admin;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.merrycodes.entity.Category;
@@ -23,10 +23,10 @@ import java.util.List;
  * @author MerryCodes
  * @date 2020/4/13 21:15
  */
-@Api(value = "API - CategoryController", tags = "文章分类API接口")
+@Api(value = "API - CategoryController - admin", tags = "文章分类API")
 @Slf4j
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/admin/category")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class CategoryController {
 

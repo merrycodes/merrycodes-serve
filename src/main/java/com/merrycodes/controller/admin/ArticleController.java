@@ -1,4 +1,4 @@
-package com.merrycodes.controller;
+package com.merrycodes.controller.admin;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.merrycodes.entity.Article;
@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.*;
  * @author MerryCodes
  * @date 2020/3/30 23:24
  */
-@Api(value = "API - ArticleController", tags = "文章API接口")
+@Api(value = "API - ArticleController - admin", tags = "文章API")
 @Slf4j
 @RestController
-@RequestMapping("/article")
+@RequestMapping("/admin/article")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ArticleController {
 
@@ -59,7 +59,7 @@ public class ArticleController {
     @ApiImplicitParam(name = "id", value = "文章id", required = true, dataTypeClass = String.class)
     @GetMapping("/{id}")
     public ResponseVo<Article> info(@PathVariable("id") Integer id) {
-        Article article = articleService.selectArticleInfo(id);
+        Article article = articleService.selectEditArticleInfo(id);
         log.info("info 获取文章详情 Article={}", article);
         return ResponseUtil.success(article);
     }

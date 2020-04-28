@@ -1,5 +1,6 @@
 package com.merrycodes.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.merrycodes.entity.Article;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,8 +25,12 @@ public class ArticleMapperTest {
     private ArticleMapper articleMapper;
 
     @Test
-    public void testMapper() {
-        List<Article> articleList = articleMapper.selectList(null);
-        assertEquals(0, articleList.size());
+    public void test() {
+        // Integer count = articleService.lambdaQuery().like(Article::getTags, "Banana").count();
+        QueryWrapper<Article> wrapper = new QueryWrapper<>();
+        wrapper.select("count(1) count").like("tags", "Banana");
+        List<Map<String, Object>> mapList = articleMapper.selectMaps(wrapper);
+        System.out.println(mapList);
+        // assertEquals(new Integer(10), count);
     }
 }

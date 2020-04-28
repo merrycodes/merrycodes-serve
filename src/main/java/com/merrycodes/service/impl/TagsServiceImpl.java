@@ -10,6 +10,7 @@ import com.merrycodes.entity.Tags;
 import com.merrycodes.enums.StatusEnum;
 import com.merrycodes.mapper.TagsMapper;
 import com.merrycodes.service.TagsService;
+import com.merrycodes.vo.TagsVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -84,4 +85,15 @@ public class TagsServiceImpl extends ServiceImpl<TagsMapper, Tags> implements Ta
         List<Tags> tagsList = tagsMapper.selectList(wrapper);
         return tagsList.stream().map(Tags::getName).collect(Collectors.toList());
     }
+
+    /**
+     * 获取标签与发布的文章
+     *
+     * @return 文章标签对象模型
+     */
+    @Override
+    public List<TagsVo> selectTagsWithArticle() {
+        return tagsMapper.selectTagsWithArticle();
+    }
+
 }

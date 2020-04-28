@@ -5,8 +5,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.merrycodes.entity.Tags;
+import com.merrycodes.vo.TagsVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 文章标签 CRUD操作
@@ -30,4 +33,11 @@ public interface TagsMapper extends BaseMapper<Tags> {
     IPage<Tags> selectTagsPageWithCont(Page<Tags> page, @Param("ew") Wrapper<Tags> wrapper,
                                        @Param("countSort") String countSort, @Param("staus") Integer status,
                                        @Param("name") String name);
+
+    /**
+     * 获取标签与发布的文章
+     *
+     * @return 文章标签对象模型
+     */
+    List<TagsVo> selectTagsWithArticle();
 }

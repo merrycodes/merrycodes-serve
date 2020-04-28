@@ -5,8 +5,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.merrycodes.entity.Category;
+import com.merrycodes.vo.CategoryVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 文章分类 CRUD操作
@@ -27,7 +30,14 @@ public interface CategoryMapper extends BaseMapper<Category> {
      * @param name      文章标签的名字 （用于查询）
      * @return 分页 Page 对象接口 {@link IPage}
      */
-    IPage<Category> selectCategoryPageWithCont(Page<Category> page, @Param("ew") Wrapper<Category> wrapper,
-                                               @Param("countSort") String countSort, @Param("staus") Integer status,
-                                               @Param("name") String name);
+    IPage<Category> selectCategoryPageWithCount(Page<Category> page, @Param("ew") Wrapper<Category> wrapper,
+                                                @Param("countSort") String countSort, @Param("staus") Integer status,
+                                                @Param("name") String name);
+
+    /**
+     * 获取分类与发布的文章
+     *
+     * @return 文章标签对象模型
+     */
+    List<CategoryVo> selectCategoryWithArticle();
 }

@@ -1,6 +1,5 @@
 package com.merrycodes.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -11,6 +10,7 @@ import com.merrycodes.entity.Category;
 import com.merrycodes.enums.StatusEnum;
 import com.merrycodes.mapper.CategoryMapper;
 import com.merrycodes.service.CategoryService;
+import com.merrycodes.vo.CategoryVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -65,7 +65,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         } else {
             countSort = sortMap.get(SortMapConstant.SORT_KEY);
         }
-        return categoryMapper.selectCategoryPageWithCont(categoryPage, wrapper, countSort, category.getStatus(), category.getName());
+        return categoryMapper.selectCategoryPageWithCount(categoryPage, wrapper, countSort, category.getStatus(), category.getName());
     }
 
     /**
@@ -94,4 +94,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         List<Category> categoryList = categoryMapper.selectList(wrapper);
         return categoryList.stream().map(Category::getName).collect(Collectors.toList());
     }
+
+    /**
+     * 获取分类与发布的文章
+     *
+     * @return 文章标签对象模型
+     */
+    @Override
+    public List<CategoryVo> selectCategoryWithArticle() {
+        return categoryMapper.selectCategoryWithArticle();
+    }
+
 }

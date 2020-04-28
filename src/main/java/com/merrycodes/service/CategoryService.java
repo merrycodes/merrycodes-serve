@@ -3,6 +3,7 @@ package com.merrycodes.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.merrycodes.entity.Category;
+import com.merrycodes.vo.CategoryVo;
 
 import java.util.List;
 
@@ -38,4 +39,11 @@ public interface CategoryService extends IService<Category> {
      * @return 文章分类名集合
      */
     List<String> selectCategoryNameListByStatus();
+
+    /**
+     * 获取标签与发布的文章
+     *
+     * @return 文章标签对象模型
+     */
+    List<CategoryVo> selectCategoryWithArticle();
 }

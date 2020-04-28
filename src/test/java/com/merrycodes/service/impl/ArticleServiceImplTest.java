@@ -1,10 +1,9 @@
 package com.merrycodes.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.merrycodes.entity.Article;
-import com.merrycodes.mapper.ArticleMapper;
 import com.merrycodes.service.ArticleService;
+import com.merrycodes.vo.ArchiveVo;
 import com.merrycodes.vo.PaginationVo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -31,21 +29,14 @@ public class ArticleServiceImplTest {
 
     private ArticleService articleService;
 
-    private ArticleMapper articleMapper;
-
     @Autowired
     public void setArticleService(ArticleService articleService) {
         this.articleService = articleService;
     }
 
-    @Autowired
-    public void setArticleMapper(ArticleMapper articleMapper) {
-        this.articleMapper = articleMapper;
-    }
-
     @Test
     public void getArticleInfo() {
-        Article article = articleService.selectArticleInfo(4);
+        Article article = articleService.selectEditArticleInfo(4);
         System.out.println(article);
         assertEquals(new Integer(4), article.getId());
     }
@@ -67,12 +58,18 @@ public class ArticleServiceImplTest {
     }
 
     @Test
-    public void test() {
-//        Integer count = articleService.lambdaQuery().like(Article::getTags, "Banana").count();
-        QueryWrapper<Article> wrapper = new QueryWrapper<>();
-        wrapper.select("count(1) count").like("tags", "Banana");
-        List<Map<String, Object>> mapList = articleMapper.selectMaps(wrapper);
-        System.out.println(mapList);
-//        assertEquals(new Integer(10), count);
+    public void selectArticlePageByStatus() {
+        IPage<Article> iPage = articleService.selectArticlePageByStatus(1, 5);
+        PaginationVo<Article> paginationVo = new PaginationVo<>(iPage);
+        assertEquals(5, paginationVo.getList().size());
+    }
+
+    @Test
+    public void selectArchiveList() {
+        List<ArchiveVo> archiveVos = articleService.selectArchiveList();
+        archiveVos.forEach(archiveVo -> {
+            System.out.println(archiveVo.year);
+            archiveVo.articleList.forEach(System.out::println);
+        });
     }
 }

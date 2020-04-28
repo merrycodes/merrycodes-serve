@@ -3,6 +3,7 @@ package com.merrycodes.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.merrycodes.entity.Tags;
+import com.merrycodes.vo.TagsVo;
 
 import java.util.List;
 
@@ -37,5 +38,12 @@ public interface TagsService extends IService<Tags> {
      * @return 文章标签名字集合
      */
     List<String> selectTagsNameListByStatus();
+
+    /**
+     * 获取标签与发布的文章
+     *
+     * @return 文章标签对象模型
+     */
+    List<TagsVo> selectTagsWithArticle();
 
 }

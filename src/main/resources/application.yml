@@ -1,6 +1,6 @@
 server:
   servlet:
-    context-path: /admin
+    context-path: /api
 spring:
   application:
     name: MerryCodes

@@ -1,4 +1,4 @@
-package com.merrycodes.controller;
+package com.merrycodes.controller.admin;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.merrycodes.entity.Tags;
@@ -23,10 +23,10 @@ import java.util.List;
  * @author MerryCodes
  * @date 2020/4/11 12:36
  */
-@Api(value = "API - TagsController", tags = "文章标签API接口")
+@Api(value = "API - TagsController - admin", tags = "文章标签API")
 @Slf4j
 @RestController
-@RequestMapping("/tags")
+@RequestMapping("/admin/tags")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class TagsController {
 
