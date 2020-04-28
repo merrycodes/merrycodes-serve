@@ -1,18 +1,18 @@
-package com.merrycodes.vo;
+package com.merrycodes.model.vo;
 
-import com.merrycodes.entity.Article;
+import com.merrycodes.model.entity.Article;
 import lombok.Data;
 
 import java.util.List;
 
 /**
- * 文章标签对象模型
+ * 文章分类对象模型
  *
  * @author MerryCodes
- * @date 2020/4/22 23:11
+ * @date 2020/4/22 22:21
  */
 @Data
-public class TagsVo {
+public class CategoryVo {
 
     private Integer id;
 

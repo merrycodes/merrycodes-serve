@@ -2,17 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.merrycodes.mapper.CategoryMapper">
 
-    <resultMap id="mapper" type="com.merrycodes.vo.CategoryVo">
+    <resultMap id="mapper" type="com.merrycodes.model.vo.CategoryVo">
         <id column="categoryId" property="id" jdbcType="INTEGER"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
-        <collection property="articleList" ofType="com.merrycodes.entity.Article">
+        <collection property="articleList" ofType="com.merrycodes.model.entity.Article">
             <id column="articleId" property="id" jdbcType="INTEGER"/>
             <result column="title" property="title" jdbcType="VARCHAR"/>
         </collection>
     </resultMap>
 
     <!-- 使用find_in_set(b.name, a.tags)也可以，网上查看效率都差不多（没有足够多的数据测试） -->
-    <select id="selectCategoryPageWithCount" resultType="com.merrycodes.entity.Category" parameterType="java.util.Map">
+    <select id="selectCategoryPageWithCount" resultType="com.merrycodes.model.entity.Category" parameterType="java.util.Map">
         SELECT a.id, a.name, a.status, COUNT(b.id) AS count, a.create_time, a.update_time
         FROM category a
         LEFT JOIN article b ON a.name = b.category

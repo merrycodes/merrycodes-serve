@@ -1,7 +1,7 @@
-package com.merrycodes.util;
+package com.merrycodes.utils;
 
-import com.merrycodes.enums.ResponseEnum;
-import com.merrycodes.vo.ResponseVo;
+import com.merrycodes.constant.enums.ResponseEnum;
+import com.merrycodes.model.vo.ResponseVo;
 
 /**
  * 统一返回前端对象工具类
@@ -9,7 +9,7 @@ import com.merrycodes.vo.ResponseVo;
  * @author MerryCodes
  * @date 2020/3/31 22:47
  */
-public class ResponseUtil {
+public class ResponseUtils {
 
     public static <T> ResponseVo<T> success() {
         return new ResponseVo<>(ResponseEnum.SUCCESS.getCode());

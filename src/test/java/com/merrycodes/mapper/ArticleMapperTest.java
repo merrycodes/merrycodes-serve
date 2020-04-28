@@ -1,7 +1,7 @@
 package com.merrycodes.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.merrycodes.entity.Article;
+import com.merrycodes.model.entity.Article;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
