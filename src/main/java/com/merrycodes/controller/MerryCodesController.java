@@ -5,6 +5,7 @@ import com.merrycodes.model.entity.Article;
 import com.merrycodes.model.vo.*;
 import com.merrycodes.service.intf.ArticleService;
 import com.merrycodes.service.intf.CategoryService;
+import com.merrycodes.service.intf.SettingService;
 import com.merrycodes.service.intf.TagsService;
 import com.merrycodes.utils.ResponseUtils;
 import io.swagger.annotations.Api;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author MerryCodes
@@ -33,6 +35,8 @@ public class MerryCodesController {
     private final CategoryService categoryService;
 
     private final TagsService tagsService;
+
+    private final SettingService settingService;
 
     @GetMapping("/article")
     public ResponseVo<PaginationVo<Article>> articleList(@RequestParam(value = "current", defaultValue = "1") Integer current,
@@ -69,6 +73,12 @@ public class MerryCodesController {
     public ResponseVo<List<ArchiveVo>> archiveList() {
         List<ArchiveVo> archiveVos = articleService.selectArchiveList();
         return ResponseUtils.success(archiveVos);
+    }
+
+    @GetMapping("/setting")
+    public ResponseVo<Map<String, String>> selectAllSetting() {
+        Map<String, String> map = settingService.selectSettingMap();
+        return ResponseUtils.success(map);
     }
 
 }
