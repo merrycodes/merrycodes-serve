@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.merrycodes.model.entity.Category;
 import com.merrycodes.model.vo.CategoryVo;
+import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.cache.decorators.FifoCache;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

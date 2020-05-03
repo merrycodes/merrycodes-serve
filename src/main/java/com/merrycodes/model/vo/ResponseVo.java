@@ -20,7 +20,7 @@ public class ResponseVo<T> {
      * 返回状态码
      */
     @ApiModelProperty("返回状态码")
-    private Integer code;
+    private final Integer code;
 
     /**
      * 返回信息

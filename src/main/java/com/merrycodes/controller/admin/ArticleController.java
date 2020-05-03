@@ -13,7 +13,11 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.web.bind.annotation.*;
+
+import static com.merrycodes.constant.consist.CacheValueConsist.*;
 
 /**
  * 文章
@@ -32,14 +36,18 @@ public class ArticleController {
 
     /**
      * 保存或更新文章
-     * TODO 后期将改为先保存到Redis中，然后开启一个定时任务再保存到数据库中
      *
      * @param article 文章实体类
      * @return 文章id
      */
+    @PostMapping("save")
     @ApiOperation(value = "文章保存或更新接口", notes = "文章保存或更新接口")
     @ApiImplicitParam(name = "article", value = "文章实体类", required = true, dataTypeClass = Article.class)
-    @PostMapping("save")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = CACHE_VALUE_ARTICLE, beforeInvocation = true, allEntries = true),
+            @CacheEvict(cacheNames = CACHE_VALUE_TAG_ARTICLE, beforeInvocation = true, allEntries = true),
+            @CacheEvict(cacheNames = CACHE_VALUE_CATEGORY_ARTICLE, beforeInvocation = true, allEntries = true)
+    })
     public ResponseVo<Integer> save(Article article) {
         if (!articleService.saveOrUpdate(article)) {
             log.info("【save 文章保存/更新失败】");
@@ -55,9 +63,9 @@ public class ArticleController {
      * @param id 文章id
      * @return 文章实体类
      */
+    @GetMapping("/{id}")
     @ApiOperation(value = "获取文章详情接口", notes = "获取文章详情接口")
     @ApiImplicitParam(name = "id", value = "文章id", required = true, dataTypeClass = String.class)
-    @GetMapping("/{id}")
     public ResponseVo<Article> info(@PathVariable("id") Integer id) {
         Article article = articleService.selectEditArticleInfo(id);
         log.info("info 获取文章详情 Article={}", article);
@@ -66,20 +74,19 @@ public class ArticleController {
 
     /**
      * 获取文章列表接口
-     * TODO 后期在Service层,把查询到的数据保存到Redis中
      *
      * @param current 当前页数
      * @param size    当前分页总条数
      * @param article 文章实体类
      * @return 文章列表实体类
      */
+    @GetMapping
     @ApiOperation(value = "获取文章列表接口", notes = "获取文章列表接口")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页数", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "size", value = "当前分页总页数", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "article", value = "文章实体类", dataTypeClass = Article.class)
     })
-    @GetMapping
     public ResponseVo<PaginationVo<Article>> list(@RequestParam(value = "current", required = false, defaultValue = "1") Integer current,
                                                   @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
                                                   Article article) {

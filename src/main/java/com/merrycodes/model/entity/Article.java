@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.merrycodes.constant.consist.SortMapConsist;
+import com.merrycodes.utils.ToStringStyleUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -114,4 +116,8 @@ public class Article implements Serializable {
             example = "{\"name\":\"update\", \"sort\":\"desc\"}")
     private Map<String, String> sort;
 
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyleUtils.NO_NULL_STYLE);
+    }
 }

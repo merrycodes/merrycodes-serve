@@ -13,11 +13,11 @@ spring:
       # 连接池的最大值
       max-active: 20
       # 连接池启动时的初始值
-      initial-size: 1
+      initial-size: 5
       # 最大建立连接等待时间。如果超过此时间将接到异常。设为－1表示无限制
       max-wait: 60000
       # 最小空闲值.当空闲的连接数少于阀值时，连接池就会预申请去一些连接，以免洪峰来时来不及申请
-      min-idle: 1
+      min-idle: 5
       filters: stat,wall
       time-between-eviction-runs-millis: 60000
       # 连接的超时时间，默认为半小时
@@ -26,8 +26,22 @@ spring:
       test-while-idle: true
       test-on-borrow: false
       test-on-return: false
+      validation-query: SELECT 1 FROM DUAL
       pool-prepared-statements: true
       max-open-prepared-statements: 20
+      aop-patterns: com.merrycodes.mapper.*,com.merrycodes.controller.*,com.merrycodes.service.*,
+      stat-view-servlet:
+        login-username: admin
+        login-password: admin
+        deny: 127.0.0.1
+        allow: 127.0.0.1
+        reset-enable: false
+        enabled: true
+        url-pattern: /druid/*
+      web-stat-filter:
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+        enabled: true
+        profile-enable: true
 # log
 logging:
   level:

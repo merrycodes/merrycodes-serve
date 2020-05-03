@@ -12,7 +12,8 @@
     </resultMap>
 
     <!-- 使用find_in_set(b.name, a.tags)也可以，网上查看效率都差不多（没有足够多的数据测试） -->
-    <select id="selectCategoryPageWithCount" resultType="com.merrycodes.model.entity.Category" parameterType="java.util.Map">
+    <select id="selectCategoryPageWithCount" resultType="com.merrycodes.model.entity.Category"
+            parameterType="java.util.Map">
         SELECT a.id, a.name, a.status, COUNT(b.id) AS count, a.create_time, a.update_time
         FROM category a
         LEFT JOIN article b ON a.name = b.category

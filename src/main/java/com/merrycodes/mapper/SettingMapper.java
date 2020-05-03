@@ -5,6 +5,8 @@ import com.merrycodes.model.entity.Setting;
 import org.springframework.stereotype.Repository;
 
 /**
+ * 网站设置 curd操作
+ *
  * @author MerryCodes
  * @date 2020/4/29 11:33
  */

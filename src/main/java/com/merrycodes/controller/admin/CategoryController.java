@@ -13,9 +13,13 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.merrycodes.constant.consist.CacheValueConsist.*;
 
 /**
  * 文章分类
@@ -38,9 +42,14 @@ public class CategoryController {
      * @param category 文章分类实体类 {@link Category}
      * @return 文章分类id
      */
+    @PostMapping("/save")
     @ApiOperation(value = "文章分类保存或更新接口", notes = "文章分类保存或更新接口")
     @ApiImplicitParam(name = "category", value = "文章分类实体类", dataTypeClass = Category.class)
-    @PostMapping("/save")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = CACHE_VALUE_ARTICLE, beforeInvocation = true, allEntries = true),
+            @CacheEvict(cacheNames = CACHE_VALUE_CATEGORY, beforeInvocation = true, allEntries = true),
+            @CacheEvict(cacheNames = CACHE_VALUE_CATEGORY_ARTICLE, beforeInvocation = true, allEntries = true)
+    })
     public ResponseVo<Integer> saveOrUpdate(Category category) {
 
         if (!categoryService.saveOrUpdate(category)) {
@@ -58,13 +67,13 @@ public class CategoryController {
      * @param category 文章分类实体类
      * @return 文章分类列表实体类
      */
+    @GetMapping
     @ApiOperation(value = "文章分类列表分页查询接口", notes = "文章分类列表分页查询接口")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页数", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "size", value = "当前分页总页数", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "category", value = "文章分类实体类", dataTypeClass = Category.class)
     })
-    @GetMapping
     public ResponseVo<PaginationVo<Category>> selectCategoryPage(@RequestParam(value = "current", defaultValue = "1") Integer current,
                                                                  @RequestParam(value = "size", defaultValue = "10") Integer size,
                                                                  Category category) {
@@ -73,16 +82,16 @@ public class CategoryController {
         return ResponseUtils.success(new PaginationVo<>(iPage));
     }
 
-    @ApiOperation(value = "获取文章分类名字的全部集合（用于文章列表查询的选线）", notes = "获取文章分类名字的全部集合（用于文章列表查询的选线）")
     @GetMapping("/list")
+    @ApiOperation(value = "获取文章分类名字的全部集合（用于文章列表查询的选线）", notes = "获取文章分类名字的全部集合（用于文章列表查询的选线）")
     public ResponseVo<List<String>> categoryNameList() {
         List<String> list = categoryService.selectCategoryNameList();
         log.info("【categoryNameList 获取文章分类名 list={}】", list);
         return ResponseUtils.success(list);
     }
 
-    @ApiOperation(value = "获取生效的文章分类名字的集合（用于新建文章的选项）", notes = "获取生效的文章分类名字的集合（用于新建文章的选项）")
     @GetMapping("/stausList")
+    @ApiOperation(value = "获取生效的文章分类名字的集合（用于新建文章的选项）", notes = "获取生效的文章分类名字的集合（用于新建文章的选项）")
     public ResponseVo<List<String>> categoryNameListByStaus() {
         List<String> list = categoryService.selectCategoryNameListByStatus();
         log.info("【categoryNameListByStaus 获取文章分类名（by status） list={}】", list);

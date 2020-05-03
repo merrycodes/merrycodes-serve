@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
-import com.merrycodes.constant.consist.SortMapConsist;
 import com.merrycodes.constant.enums.ArticleEnum;
 import com.merrycodes.mapper.ArticleMapper;
 import com.merrycodes.model.entity.Article;
@@ -16,11 +15,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.merrycodes.constant.consist.SortMapConsist.*;
+import static com.merrycodes.constant.consist.CacheValueConsist.CACHE_VALUE_ARTICLE;
 
 /**
  * 文章service接口实现类
@@ -42,6 +46,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * @return 文章实体类 {@link Article}
      */
     @Override
+    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'article['+#id+']'")
     public Article selectArticleInfo(Integer id) {
         LambdaQueryWrapper<Article> wrapper = Wrappers.<Article>lambdaQuery()
                 .select(Article.class, article -> !StringUtils.equals("status", article.getColumn()) &&
@@ -58,6 +63,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * @return 文章实体类 {@link Article}
      */
     @Override
+    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'articleEdit['+#id+']'")
     public Article selectEditArticleInfo(Integer id) {
         LambdaQueryWrapper<Article> wrapper = Wrappers.<Article>lambdaQuery()
                 .select(Article.class, article -> !StringUtils.equals("create_time", article.getColumn()) &&
@@ -75,10 +81,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * @param size    当前分页总页数
      * @param article 文章实体类 {@link Article}
      * @return 分页 Page 对象接口 {@link IPage}
-     * @see <a href="https://github.com/baomidou/mybatis-plus/issues/467"></a>
+     * @see <a href="https://github.com/baomidou/mybatis-plus/issues/467">参考链接</a>
      */
     @Override
     @SuppressWarnings("unchecked")
+    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'adminArticleList['+#current+':'+#size+':'+#article+']'")
     public IPage<Article> selectArticlePage(Integer current, Integer size, Article article) {
         Page<Article> page = new Page<>(current, size);
         LambdaQueryWrapper<Article> wrapper = Wrappers.<Article>lambdaQuery()
@@ -95,14 +102,14 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         Map<String, String> sortMap = article.getSort();
         if (sortMap != null) {
             // 判断是否等于 name 是否等于 update 如果是则 order by updateTime 否者 order by createTime
-            if (StringUtils.equals(SortMapConsist.UPDATE_TIME, sortMap.get(SortMapConsist.NAME_KEY))) {
+            if (StringUtils.equals(UPDATE_TIME, sortMap.get(NAME_KEY))) {
                 // 判断前端传来按 顺序/倒叙 排序
-                wrapper.orderByAsc(StringUtils.equals(SortMapConsist.ASC, sortMap.get(SortMapConsist.SORT_KEY)), Article::getUpdateTime)
-                        .orderByDesc(StringUtils.equals(SortMapConsist.DESC, sortMap.get(SortMapConsist.SORT_KEY)), Article::getUpdateTime);
+                wrapper.orderByAsc(StringUtils.equals(ASC, sortMap.get(SORT_KEY)), Article::getUpdateTime)
+                        .orderByDesc(StringUtils.equals(DESC, sortMap.get(SORT_KEY)), Article::getUpdateTime);
             } else {
                 // 同上
-                wrapper.orderByAsc(StringUtils.equals(SortMapConsist.ASC, sortMap.get(SortMapConsist.SORT_KEY)), Article::getCreateTime)
-                        .orderByDesc(StringUtils.equals(SortMapConsist.DESC, sortMap.get(SortMapConsist.SORT_KEY)), Article::getCreateTime);
+                wrapper.orderByAsc(StringUtils.equals(ASC, sortMap.get(SORT_KEY)), Article::getCreateTime)
+                        .orderByDesc(StringUtils.equals(DESC, sortMap.get(SORT_KEY)), Article::getCreateTime);
             }
         }
         return articleMapper.selectPage(page, wrapper);
@@ -114,6 +121,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * @return 文章集合
      */
     @Override
+    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'ArticleListForSEO'")
     public List<Article> selectArticleList() {
         LambdaQueryWrapper<Article> wrapper = Wrappers.<Article>lambdaQuery()
                 .select(Article::getId, Article::getTitle, Article::getSummaryContent)
@@ -129,6 +137,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * @return 分页 Page 对象接口 {@link IPage}
      */
     @Override
+    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'frontArticleList['+#current+':'+#size+']'")
     public IPage<Article> selectArticlePageByStatus(Integer current, Integer size) {
         Page<Article> page = new Page<>(current, size);
         LambdaQueryWrapper<Article> wrapper = Wrappers.<Article>lambdaQuery()
@@ -149,6 +158,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * @return 文章归档列表 {@link ArchiveVo}
      */
     @Override
+    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'frontArchiveList'")
     public List<ArchiveVo> selectArchiveList() {
         List<Article> articleList = selectArticleListByStatus();
         List<ArchiveVo> archiveVoList = new ArrayList<>();
@@ -169,7 +179,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         return archiveVoList;
     }
 
-    private List<Article> selectArticleListByStatus() {
+    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'ArticleListForArchive'")
+    public List<Article> selectArticleListByStatus() {
         LambdaQueryWrapper<Article> wrapper = Wrappers.<Article>lambdaQuery()
                 .select(Article::getId, Article::getTitle, Article::getCreateTime)
                 .eq(Article::getStatus, ArticleEnum.PUBLISH.getCode())

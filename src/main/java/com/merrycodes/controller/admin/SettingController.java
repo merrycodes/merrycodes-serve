@@ -6,9 +6,12 @@ import com.merrycodes.utils.ResponseUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+
+import static com.merrycodes.constant.consist.CacheValueConsist.CACHE_VALUE_SETTING;
 
 /**
  * 网站设置
@@ -25,8 +28,8 @@ public class SettingController {
     private final SettingService settingService;
 
     @PostMapping("/save")
+    @CacheEvict(cacheNames = CACHE_VALUE_SETTING, beforeInvocation = true, allEntries = true)
     public ResponseVo<Integer> save(@RequestParam Map<String, String> settingMap) {
-        settingMap.forEach((k, v) -> System.out.printf("%s:%s", k, v));
         settingService.save(settingMap);
         return ResponseUtils.success();
     }

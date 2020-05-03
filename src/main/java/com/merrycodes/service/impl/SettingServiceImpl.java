@@ -9,12 +9,15 @@ import com.merrycodes.service.intf.SettingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.merrycodes.constant.consist.CacheValueConsist.CACHE_VALUE_SETTING;
 
 /**
  * 网站设置service接口实现类
@@ -30,6 +33,7 @@ public class SettingServiceImpl extends ServiceImpl<SettingMapper, Setting> impl
     private final SettingMapper settingMapper;
 
     @Override
+    @Transactional(rollbackFor = Throwable.class)
     public void save(Map<String, String> settingMap) {
         settingMap.forEach(this::save);
     }
@@ -60,6 +64,7 @@ public class SettingServiceImpl extends ServiceImpl<SettingMapper, Setting> impl
      * @return 网站设置实体类 {@link Setting}
      */
     @Override
+    @Cacheable(cacheNames = CACHE_VALUE_SETTING, key = "'setting['+#settingKey+']'")
     public Setting findSystemSettingByKey(String settingKey) {
         LambdaQueryWrapper<Setting> wrapper = Wrappers.<Setting>lambdaQuery()
                 .select(Setting::getId, Setting::getSettingKey, Setting::getSettingValue)
@@ -73,6 +78,7 @@ public class SettingServiceImpl extends ServiceImpl<SettingMapper, Setting> impl
      * @return 网站设置集合
      */
     @Override
+    @Cacheable(cacheNames = CACHE_VALUE_SETTING, key = "'settingMap'")
     public Map<String, String> selectSettingMap() {
         LambdaQueryWrapper<Setting> wrapper = Wrappers.<Setting>lambdaQuery()
                 .select(Setting::getSettingKey, Setting::getSettingValue);
