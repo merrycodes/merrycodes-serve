@@ -1,5 +1,6 @@
 package com.merrycodes.constant.enums;
 
+import com.merrycodes.constant.enums.intf.CodeEnum;
 import lombok.Getter;
 
 /**
@@ -36,11 +37,20 @@ public enum ResponseEnum implements CodeEnum {
      */
     TOKEN_EXPIRE(50014, "token过期"),
 
+    /**
+     * 50016 表示权限不足
+     */
+    ACCESS_DENIED(50016, "权限不足"),
+
+    /**
+     * 50016 表示未登录
+     */
+    NOT_LOGIN_IN(50018, "请登录"),
     ;
 
-    private Integer code;
+    private final Integer code;
 
-    private String message;
+    private final String message;
 
     ResponseEnum(Integer code, String message) {
         this.code = code;

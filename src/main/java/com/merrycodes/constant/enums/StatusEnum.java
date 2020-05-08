@@ -1,5 +1,6 @@
 package com.merrycodes.constant.enums;
 
+import com.merrycodes.constant.enums.intf.CodeEnum;
 import lombok.Getter;
 
 /**
@@ -21,9 +22,9 @@ public enum StatusEnum implements CodeEnum {
     VALID(1, "生效"),
     ;
 
-    private Integer code;
+    private final Integer code;
 
-    private String message;
+    private final String message;
 
     StatusEnum(Integer code, String message) {
         this.code = code;

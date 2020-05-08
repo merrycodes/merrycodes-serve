@@ -1,5 +1,6 @@
 package com.merrycodes.constant.enums;
 
+import com.merrycodes.constant.enums.intf.CodeEnum;
 import lombok.Getter;
 
 /**
@@ -25,9 +26,9 @@ public enum ArticleEnum implements CodeEnum {
      */
     CANCEL_PUBLISH(2, "取消发布"),
     ;
-    private Integer code;
+    private final Integer code;
 
-    private String message;
+    private final String message;
 
     ArticleEnum(Integer code, String message) {
         this.code = code;

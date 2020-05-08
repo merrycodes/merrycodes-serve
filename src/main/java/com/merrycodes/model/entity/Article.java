@@ -1,19 +1,17 @@
 package com.merrycodes.model.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.merrycodes.constant.consist.SortMapConsist;
+import com.merrycodes.model.entity.abstracts.AbstractBaseEntiry;
 import com.merrycodes.utils.ToStringStyleUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Map;
 
 /**
  * 文章实体类
@@ -21,10 +19,11 @@ import java.util.Map;
  * @author MerryCodes
  * @date 2020/3/30 15:36
  */
-@ApiModel(description = "文章实体类")
 @Data
+@EqualsAndHashCode(callSuper = true)
+@ApiModel(description = "文章实体类")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Article implements Serializable {
+public class Article extends AbstractBaseEntiry implements Serializable {
 
     private static final long serialVersionUID = 926744113667809796L;
 
@@ -90,31 +89,6 @@ public class Article implements Serializable {
      */
     @ApiModelProperty("文章是否可以评论，默认未ture")
     private Boolean allowComment;
-
-
-    /**
-     * 文章创建时间，默认为当前时间
-     */
-    @ApiModelProperty("文章创建时间，默认为当前时间")
-    private LocalDateTime createTime;
-
-    /**
-     * 文章更新时间，默认为当前时间
-     */
-    @ApiModelProperty("文章更新时间，默认为当前时间")
-    private LocalDateTime updateTime;
-
-    /**
-     * order by updateTime desc
-     * 默认值 {name=update, sort=desc}
-     * 前端传来是一个对象，使用 Map 接收
-     *
-     * @see SortMapConsist
-     */
-    @TableField(exist = false)
-    @ApiModelProperty(value = "列表排序 default = {\"name\":\"update\", \"sort\":\"desc\"})",
-            example = "{\"name\":\"update\", \"sort\":\"desc\"}")
-    private Map<String, String> sort;
 
     @Override
     public String toString() {

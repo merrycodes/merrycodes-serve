@@ -33,7 +33,7 @@ public class SettingServiceImpl extends ServiceImpl<SettingMapper, Setting> impl
     private final SettingMapper settingMapper;
 
     @Override
-    @Transactional(rollbackFor = Throwable.class)
+    @Transactional(rollbackFor = Exception.class)
     public void save(Map<String, String> settingMap) {
         settingMap.forEach(this::save);
     }
@@ -45,7 +45,7 @@ public class SettingServiceImpl extends ServiceImpl<SettingMapper, Setting> impl
      * @param settingValue 网站设置的value
      */
     @Override
-    @Transactional(rollbackFor = Throwable.class)
+    @Transactional(rollbackFor = Exception.class)
     public void save(String settingKey, String settingValue) {
         Setting setting = findSystemSettingByKey(settingKey);
         if (setting != null) {

@@ -6,7 +6,7 @@ import com.merrycodes.model.entity.Setting;
 import java.util.Map;
 
 /**
- * 网站设置service接口实现类
+ * 网站设置service接口
  *
  * @author MerryCodes
  * @date 2020/4/29 11:34
