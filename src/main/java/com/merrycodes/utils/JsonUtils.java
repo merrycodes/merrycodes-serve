@@ -30,6 +30,7 @@ public class JsonUtils {
             return Optional.ofNullable(MAPPER.writeValueAsString(object));
         } catch (JsonProcessingException e) {
             log.error("Json 序列化出错 object={} msg={}", object, e.getMessage());
+            e.printStackTrace();
             return Optional.empty();
         }
     }

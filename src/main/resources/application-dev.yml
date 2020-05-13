@@ -14,3 +14,13 @@ spring:
     port: 6379
     password:
     timeout: 3000
+jwt:
+  auth-login-url:
+  auth-logout-url:
+  public-key-path:
+  private-key-path:
+  jwt-payload-user-key: git
+  #  没有选择 '记住我' 24 * 60 一天
+  expiration: 1440
+  #  选择 '记住我' 24 * 60 * 7 一周
+  expiration-remember: 10080

@@ -1,6 +1,5 @@
 package com.merrycodes.config;
 
-import com.merrycodes.constant.consist.SecurityConsist;
 import com.merrycodes.filter.LoginAuthenticationFilter;
 import com.merrycodes.filter.TokenAuthenticationFilter;
 import com.merrycodes.handler.CostomLogoutSuccessHandler;
@@ -26,6 +25,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final JwtConfig jwtConfig;
 
     private final UserService userService;
 
@@ -57,13 +58,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers(SecurityConsist.AUTH_LOGIN_URL, SecurityConsist.AUTH_LOGOUT_URL).permitAll()
+                .antMatchers(jwtConfig.getAuthLoginUrl(), jwtConfig.getAuthLogoutUrl()).permitAll()
                 .antMatchers("/admin/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
-                .addFilter(new LoginAuthenticationFilter(super.authenticationManager()))
-                .addFilter(new TokenAuthenticationFilter(super.authenticationManager(), userService))
-                .logout().logoutUrl(SecurityConsist.AUTH_LOGOUT_URL)
+                .addFilter(new LoginAuthenticationFilter(super.authenticationManager(), jwtConfig))
+                .addFilter(new TokenAuthenticationFilter(super.authenticationManager(), userService, jwtConfig))
+                .logout().logoutUrl(jwtConfig.getAuthLogoutUrl())
                 .logoutSuccessHandler(costomLogoutSuccessHandler)
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

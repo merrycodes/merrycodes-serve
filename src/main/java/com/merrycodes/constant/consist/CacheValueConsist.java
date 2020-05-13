@@ -20,6 +20,8 @@ public interface CacheValueConsist {
 
     String CACHE_VALUE_SETTING = "settings";
 
+    String CACHE_VALUE_USER = "user";
+
 
 
 }

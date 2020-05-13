@@ -1,5 +1,6 @@
 package com.merrycodes.service.impl;
 
+import com.merrycodes.config.JwtConfig;
 import com.merrycodes.model.entity.User;
 import com.merrycodes.service.intf.UserService;
 import org.junit.Test;

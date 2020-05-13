@@ -46,6 +46,10 @@ public class ResponseUtils {
         return new ResponseVo<>(responseEnum.getCode(), responseEnum.getMessage());
     }
 
+    public static <T> ResponseVo<T> fail(Integer code, String message) {
+        return new ResponseVo<>(code, message);
+    }
+
     public static void response(ServletResponse response, String string) throws IOException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");

@@ -24,7 +24,6 @@ public class CostomLogoutSuccessHandler implements LogoutSuccessHandler {
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
                                 Authentication authentication) throws IOException {
         String jsonString = JsonUtils.writeValue(ResponseUtils.success("登出成功")).orElseThrow(NullPointerException::new);
-        System.out.println(jsonString);
         ResponseUtils.response(response,jsonString);
     }
 }

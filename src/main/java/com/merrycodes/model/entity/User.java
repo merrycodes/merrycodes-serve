@@ -4,9 +4,13 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.merrycodes.model.entity.abstracts.AbstractSecurityEntiry;
+import com.merrycodes.utils.ToStringStyleUtils;
 import lombok.*;
 import lombok.experimental.Tolerate;
+import org.apache.catalina.util.ToStringUtil;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -23,6 +27,7 @@ import java.util.List;
 @Data
 @Builder
 @EqualsAndHashCode(callSuper = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User extends AbstractSecurityEntiry implements UserDetails {
 
     /**
@@ -45,7 +50,7 @@ public class User extends AbstractSecurityEntiry implements UserDetails {
      * 用户账号是否可用
      */
     @Getter(AccessLevel.NONE)
-    private Boolean enabled;
+    private boolean enabled;
 
     /**
      * 用户角色

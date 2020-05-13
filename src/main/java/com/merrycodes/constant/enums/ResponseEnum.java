@@ -25,27 +25,17 @@ public enum ResponseEnum implements CodeEnum {
     /**
      * 50008 表示非法的token
      */
-    ILLEGAL_TOKEN(50008, "非法的token"),
-
-    /**
-     * 50012 表示其他客户端登陆（单点登陆）
-     */
-    OTHER_CILENT_LOGIN(50012, "其他客户端登录"),
-
-    /**
-     * 50014 表示token过期
-     */
-    TOKEN_EXPIRE(50014, "token过期"),
+    ILLEGAL_TOKEN(50008, "请重新登录"),
 
     /**
      * 50016 表示权限不足
      */
-    ACCESS_DENIED(50016, "权限不足"),
+    ACCESS_DENIED(50012, "权限不足"),
 
     /**
      * 50016 表示未登录
      */
-    NOT_LOGIN_IN(50018, "请登录"),
+    NOT_LOGIN_IN(50016, "请登录"),
     ;
 
     private final Integer code;
