@@ -49,9 +49,11 @@ public class SettingServiceImpl extends ServiceImpl<SettingMapper, Setting> impl
     public void save(String settingKey, String settingValue) {
         Setting setting = findSystemSettingByKey(settingKey);
         if (setting != null) {
+            // 查询到数据不为空则更新
             setting.setSettingValue(settingValue);
             settingMapper.updateById(setting);
         } else {
+            // 查询到数据不空则新建
             setting = Setting.builder().settingKey(settingKey).settingValue(settingValue).build();
             settingMapper.insert(setting);
         }
@@ -67,6 +69,7 @@ public class SettingServiceImpl extends ServiceImpl<SettingMapper, Setting> impl
     @Cacheable(cacheNames = CACHE_VALUE_SETTING, key = "'setting['+#settingKey+']'")
     public Setting findSystemSettingByKey(String settingKey) {
         LambdaQueryWrapper<Setting> wrapper = Wrappers.<Setting>lambdaQuery()
+                // 查询出来的结果仅包括下面的字段
                 .select(Setting::getId, Setting::getSettingKey, Setting::getSettingValue)
                 .eq(Setting::getSettingKey, settingKey);
         return settingMapper.selectOne(wrapper);
@@ -81,8 +84,10 @@ public class SettingServiceImpl extends ServiceImpl<SettingMapper, Setting> impl
     @Cacheable(cacheNames = CACHE_VALUE_SETTING, key = "'settingMap'")
     public Map<String, String> selectSettingMap() {
         LambdaQueryWrapper<Setting> wrapper = Wrappers.<Setting>lambdaQuery()
+                // 查询出来的结果仅包括下面的字段
                 .select(Setting::getSettingKey, Setting::getSettingValue);
         List<Setting> options = settingMapper.selectList(wrapper);
+        // List 转换为 Map
         return options.stream().collect(Collectors.toMap(Setting::getSettingKey, Setting::getSettingValue));
     }
 }

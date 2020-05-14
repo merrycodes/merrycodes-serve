@@ -1,5 +1,7 @@
 package com.merrycodes.filter;
 
+import lombok.RequiredArgsConstructor;
+
 import javax.servlet.*;
 import java.io.IOException;
 
@@ -9,13 +11,10 @@ import java.io.IOException;
  * @author MerryCodes
  * @date 2020/4/30 21:38
  */
+@RequiredArgsConstructor
 public class RemoveAdvertisementFilter implements Filter {
 
     private final String commonJs;
-
-    public RemoveAdvertisementFilter(String commonJs) {
-        this.commonJs = commonJs;
-    }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {

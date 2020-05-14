@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.merrycodes.constant.enums.StatusEnum;
 import com.merrycodes.mapper.TagsMapper;
 import com.merrycodes.model.entity.Tags;
+import com.merrycodes.model.form.TagsQueryForm;
 import com.merrycodes.model.vo.TagsVo;
 import com.merrycodes.service.intf.TagsService;
 import lombok.RequiredArgsConstructor;
@@ -42,20 +43,20 @@ public class TagsServiceImpl extends ServiceImpl<TagsMapper, Tags> implements Ta
      * 文章标签分页查询
      * 使用 orderByDesc / orderByDesc 编译器会有警告 使用注解抹去
      *
-     * @param current 当前页数
-     * @param size    当前分页总条数
-     * @param tags    文章实体类 （查询）{@link Tags}
+     * @param current       当前页数
+     * @param size          当前分页总条数
+     * @param tagsQueryForm 文章标签查询表单类 （查询）{@link TagsQueryForm}
      * @return 分页 Page 对象接口 {@link IPage}
      * @see <a href="https://github.com/baomidou/mybatis-plus/issues/467">参考链接</a>
      */
     @Override
     @SuppressWarnings("unchecked")
-    @Cacheable(cacheNames = CACHE_VALUE_TAG, key = "'tagsList['+#current+':'+#size+':'+#tags+']'")
-    public IPage<Tags> selectTagsPageWithCount(Integer current, Integer size, Tags tags) {
+    @Cacheable(cacheNames = CACHE_VALUE_TAG, key = "'tagsList['+#current+':'+#size+':'+#tagsQueryForm+']'")
+    public IPage<Tags> selectTagsPageWithCount(Integer current, Integer size, TagsQueryForm tagsQueryForm) {
         Page<Tags> tagsPage = new Page<>(current, size);
         LambdaQueryWrapper<Tags> wrapper = Wrappers.lambdaQuery();
         // 前端传来的排序数据 example sortMap = {name=update, sort=desc})
-        Map<String, String> sortMap = tags.getSort();
+        Map<String, String> sortMap = tagsQueryForm.getSort();
         // count 字段排序
         String countSort = null;
         if (sortMap != null) {
@@ -72,13 +73,14 @@ public class TagsServiceImpl extends ServiceImpl<TagsMapper, Tags> implements Ta
                 countSort = sortMap.get(SORT_KEY);
             }
         }
-        return tagsMapper.selectTagsPageWithCont(tagsPage, wrapper, countSort, tags.getStatus(), tags.getName());
+        return tagsMapper.selectTagsPageWithCont(tagsPage, wrapper, countSort, tagsQueryForm.getStatus(), tagsQueryForm.getName());
     }
 
     @Override
     @Cacheable(cacheNames = CACHE_VALUE_TAG, key = "'tagsList'")
     public List<String> selectTagsNameList() {
         LambdaQueryWrapper<Tags> wrapper = Wrappers.<Tags>lambdaQuery()
+                // 查询到数据不为空则更新
                 .select(Tags::getName).orderByAsc(Tags::getName);
         List<Tags> tagsList = tagsMapper.selectList(wrapper);
         return tagsList.stream().map(Tags::getName).collect(Collectors.toList());
@@ -88,6 +90,7 @@ public class TagsServiceImpl extends ServiceImpl<TagsMapper, Tags> implements Ta
     @Cacheable(cacheNames = CACHE_VALUE_TAG, key = "'tagsListByStatus'")
     public List<String> selectTagsNameListByStatus() {
         LambdaQueryWrapper<Tags> wrapper = Wrappers.<Tags>lambdaQuery()
+                // 查询到数据不为空则更新
                 .select(Tags::getName).eq(Tags::getStatus, StatusEnum.VALID.getCode())
                 .orderByAsc(Tags::getName);
         List<Tags> tagsList = tagsMapper.selectList(wrapper);

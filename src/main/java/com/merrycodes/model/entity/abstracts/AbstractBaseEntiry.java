@@ -1,13 +1,12 @@
 package com.merrycodes.model.entity.abstracts;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.merrycodes.constant.consist.SortMapConsist;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 /**
  * 基础抽象实体类
@@ -17,6 +16,13 @@ import java.util.Map;
  */
 @Data
 public abstract class AbstractBaseEntiry implements Serializable {
+
+    /**
+     * id
+     */
+    @TableId(type = IdType.AUTO)
+    @ApiModelProperty(value = "id")
+    private Integer id;
 
     /**
      * 创建时间，默认为当前时间
@@ -30,15 +36,4 @@ public abstract class AbstractBaseEntiry implements Serializable {
     @ApiModelProperty("更新时间")
     private LocalDateTime updateTime;
 
-    /**
-     * order by updateTime desc
-     * 默认值 {name=update, sort=desc}
-     * 前端传来是一个对象，使用 Map 接收
-     *
-     * @see SortMapConsist
-     */
-    @TableField(exist = false)
-    @ApiModelProperty(value = "列表排序 default = {\"name\":\"update\", \"sort\":\"desc\"})",
-            example = "{\"name\":\"update\", \"sort\":\"desc\"}")
-    private Map<String, String> sort;
 }

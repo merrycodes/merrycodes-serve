@@ -2,8 +2,10 @@ package com.merrycodes.controller.admin;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.merrycodes.model.entity.Tags;
+import com.merrycodes.model.form.TagsQueryForm;
 import com.merrycodes.model.vo.PaginationVo;
 import com.merrycodes.model.vo.ResponseVo;
+import com.merrycodes.model.vo.TagsVo;
 import com.merrycodes.service.intf.TagsService;
 import com.merrycodes.utils.ResponseUtils;
 import io.swagger.annotations.Api;
@@ -44,7 +46,7 @@ public class TagsController {
      */
     @PostMapping("/save")
     @ApiOperation(value = "文章标签保存或更新接口", notes = "文章标签保存或更新接口")
-    @ApiImplicitParam(name = "tags", value = "文章标签实体类", dataTypeClass = Tags.class)
+    @ApiImplicitParam(name = "tags", value = "文章标签实体类", required = true, dataTypeClass = Tags.class)
     @Caching(evict = {
             @CacheEvict(cacheNames = CACHE_VALUE_TAG, beforeInvocation = true, allEntries = true),
             @CacheEvict(cacheNames = CACHE_VALUE_ARTICLE, beforeInvocation = true, allEntries = true),
@@ -62,34 +64,44 @@ public class TagsController {
     /**
      * 文章标签列表分页查询接口
      *
-     * @param current 当前页数
-     * @param size    当前分页总条数
-     * @param tags    文章标签实体类
-     * @return 文章标签列表实体类
+     * @param current       当前页数
+     * @param size          当前分页总条数
+     * @param tagsQueryForm 文章标签查询表单类
+     * @return 文章标签列表实体类 (分页) {@link Tags}
      */
     @GetMapping
     @ApiOperation(value = "获取文章标签列表接口", notes = "获取文章标签列表接口")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页数", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "size", value = "当前分页总页数", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "tags", value = "文章标签实体类", dataTypeClass = Tags.class)
+            @ApiImplicitParam(name = "tagsQueryForm", value = "文章标签查询表单类", dataTypeClass = TagsQueryForm.class)
     })
     public ResponseVo<PaginationVo<Tags>> selectTagsPage(@RequestParam(value = "current", defaultValue = "1") Integer current,
                                                          @RequestParam(value = "size", defaultValue = "10") Integer size,
-                                                         Tags tags) {
-        IPage<Tags> iPage = tagsService.selectTagsPageWithCount(current, size, tags);
+                                                         TagsQueryForm tagsQueryForm) {
+        IPage<Tags> iPage = tagsService.selectTagsPageWithCount(current, size, tagsQueryForm);
         log.info("【selectTagsPage 获取文章列表】 总条数={} 当前分页总页数={} 当前页数={}", iPage.getTotal(), iPage.getSize(), iPage.getCurrent());
         return ResponseUtils.success(new PaginationVo<>(iPage));
     }
 
+    /**
+     * 获取文章标签名字的全部集合（用于文章列表查询的选项）
+     *
+     * @return 文章标签名字实体类 {@link TagsVo}
+     */
     @GetMapping("/list")
-    @ApiOperation(value = "获取文章标签名字的全部集合（用于文章列表查询的选线）", notes = "获取文章标签名字的全部集合（用于文章列表查询的选线）")
+    @ApiOperation(value = "获取文章标签名字的全部集合（用于文章列表查询的选项）", notes = "获取文章标签名字的全部集合（用于文章列表查询的选项）")
     public ResponseVo<List<String>> tagsNameList() {
         List<String> list = tagsService.selectTagsNameList();
         log.info("【tagsNameList 获取文章标签名 list={}】", list);
         return ResponseUtils.success(list);
     }
 
+    /**
+     * 获取生效的文章标签名字的集合（用于新建文章的选项）
+     *
+     * @return 文章标签名字集合
+     */
     @GetMapping("/stausList")
     @ApiOperation(value = "获取生效的文章标签名字的集合（用于新建文章的选项）", notes = "获取生效的文章标签名字的集合（用于新建文章的选项）")
     public ResponseVo<List<String>> tagsNameListByStaus() {

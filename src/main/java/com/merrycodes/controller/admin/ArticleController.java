@@ -2,6 +2,7 @@ package com.merrycodes.controller.admin;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.merrycodes.model.entity.Article;
+import com.merrycodes.model.form.ArticleQueryForm;
 import com.merrycodes.model.vo.PaginationVo;
 import com.merrycodes.model.vo.ResponseVo;
 import com.merrycodes.service.intf.ArticleService;
@@ -61,7 +62,7 @@ public class ArticleController {
      * 获取文章详情接口
      *
      * @param id 文章id
-     * @return 文章实体类
+     * @return 文章实体类 {@link Article}
      */
     @GetMapping("/{id}")
     @ApiOperation(value = "获取文章详情接口", notes = "获取文章详情接口")
@@ -75,22 +76,22 @@ public class ArticleController {
     /**
      * 获取文章列表接口
      *
-     * @param current 当前页数
-     * @param size    当前分页总条数
-     * @param article 文章实体类
-     * @return 文章列表实体类
+     * @param current          当前页数
+     * @param size             当前分页总条数
+     * @param articleQueryForm 文章查询表单类
+     * @return 文章列表实体类 (分页) {@link Article}
      */
     @GetMapping
     @ApiOperation(value = "获取文章列表接口", notes = "获取文章列表接口")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页数", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "size", value = "当前分页总页数", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "article", value = "文章实体类", dataTypeClass = Article.class)
+            @ApiImplicitParam(name = "articleQueryForm", value = "文章查询表单类", dataTypeClass = ArticleQueryForm.class)
     })
     public ResponseVo<PaginationVo<Article>> list(@RequestParam(value = "current", required = false, defaultValue = "1") Integer current,
                                                   @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
-                                                  Article article) {
-        IPage<Article> iPage = articleService.selectArticlePage(current, size, article);
+                                                  ArticleQueryForm articleQueryForm) {
+        IPage<Article> iPage = articleService.selectArticlePage(current, size, articleQueryForm);
         log.info("【list 获取文章列表】 总条数={} 当前分页总页数={} 当前页数={}", iPage.getTotal(), iPage.getSize(), iPage.getCurrent());
         return ResponseUtils.success(new PaginationVo<>(iPage));
     }

@@ -22,6 +22,4 @@ public interface CacheValueConsist {
 
     String CACHE_VALUE_USER = "user";
 
-
-
 }

@@ -42,5 +42,4 @@ public interface SortMapConsist {
      */
     String SORT_KEY = "sort";
 
-
 }

@@ -28,13 +28,6 @@ public class Article extends AbstractBaseEntiry implements Serializable {
     private static final long serialVersionUID = 926744113667809796L;
 
     /**
-     * 文章id
-     */
-    @TableId(type = IdType.AUTO)
-    @ApiModelProperty(value = "文章id")
-    private Integer id;
-
-    /**
      * 文章标题
      */
     @ApiModelProperty("文章标题")
@@ -80,7 +73,7 @@ public class Article extends AbstractBaseEntiry implements Serializable {
      * 默认为已发布
      * 0表示草稿，1表示已发布，2表示取消发布
      */
-    @ApiModelProperty("0表示草稿，1表示已发布，2表示取消发布")
+    @ApiModelProperty("文章状态")
     private Integer status;
 
     /**

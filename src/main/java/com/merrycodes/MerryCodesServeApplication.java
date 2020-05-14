@@ -14,8 +14,8 @@ import org.springframework.cache.annotation.EnableCaching;
  * @author Miracle.Lt
  * @date 2020/3/30 12:15
  */
-@SpringBootApplication
 @EnableCaching
+@SpringBootApplication
 @MapperScan("com.merrycodes.mapper")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class MerryCodesServeApplication implements ApplicationRunner {

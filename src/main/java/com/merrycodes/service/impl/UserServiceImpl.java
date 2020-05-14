@@ -29,6 +29,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     private final UserMapper userMapper;
 
+    /**
+     * Spring Security 用户登录验证的方法
+     *
+     * @param username 用户名
+     * @return {@link UserDetails}
+     * @throws UsernameNotFoundException 用户名不存在异常
+     */
     @Override
     @Cacheable(cacheNames = CACHE_VALUE_USER, key = "'username['+#username+']'")
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -39,14 +46,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return user;
     }
 
+    /**
+     * 获取当前用户的角色
+     *
+     * @return 用户角色数组
+     */
     @Override
     @Cacheable(cacheNames = CACHE_VALUE_USER, key = "'userRoles['+target.getCurrentusername()+']'")
     public String[] selectUserRole() {
         String currentusername = getCurrentusername();
         User user = userMapper.selectBynameWithRole(currentusername);
+        // Role 对象转换 角色名称 数组
         return user.getRoles().stream().map(Role::getName).toArray(String[]::new);
     }
 
+    /**
+     * 获取当前用户名，新建个方法是为了 {@link UserServiceImpl#selectUserRole() }
+     * 中的key可以获取当前用户名
+     *
+     * @return 当前用户名
+     */
     public String getCurrentusername() {
         return CurrentUserUtils.getCurrentUsername().orElseThrow(NullPointerException::new);
     }

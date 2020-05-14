@@ -45,24 +45,21 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String header = request.getHeader(jwtConfig.getTokenHeader());
-        if (header == null || !header.startsWith(jwtConfig.getTokenPrefix())) {
-            // 没有携带token就认为没有登录
-            String jsonString = JsonUtils.writeValue(ResponseUtils.fail(ResponseEnum.NOT_LOGIN_IN)).orElseThrow(NullPointerException::new);
-            ResponseUtils.response(response, jsonString);
-        } else {
-            // 携带了正确的token
+        // 是否正确的携带了Token
+        if (header != null && header.startsWith(jwtConfig.getTokenPrefix())) {
             UsernamePasswordAuthenticationToken authentication;
             try {
                 authentication = getAuthentication(header);
+                // 携带了错误的Token，会抛出异常
             } catch (TokenException e) {
-                log.error("Token 解析错误");
+                log.error("Token 解析错误 msg={}", e.getMessage());
                 String jsonString = JsonUtils.writeValue(ResponseUtils.fail(ResponseEnum.ILLEGAL_TOKEN)).orElseThrow(NullPointerException::new);
                 ResponseUtils.response(response, jsonString);
                 return;
             }
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            chain.doFilter(request, response);
         }
+        chain.doFilter(request, response);
     }
 
     /**

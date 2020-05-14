@@ -25,16 +25,31 @@ public class RoleServieImpl extends ServiceImpl<RoleMapper, Role> implements Rol
 
     private final RoleMapper roleMapper;
 
+    /**
+     * 根据角色名称和描述判断是否存在角色
+     *
+     * @param name        角色名
+     * @param description 角色描述
+     * @return {@link Boolean} 存在 / 不存在 false / true
+     */
     @Override
     public Boolean exits(String name, String description) {
         LambdaQueryWrapper<Role> wrapper = Wrappers.<Role>lambdaQuery()
+                // 查询出来的结果仅包括下面的字段
                 .eq(Role::getName, name).eq(Role::getDescription, description);
         return roleMapper.selectCount(wrapper) == 0;
     }
 
+    /**
+     * 根据角色名查询角色
+     *
+     * @param name 角色名
+     * @return {@link Role}
+     */
     @Override
     public Role findByName(String name) {
         LambdaQueryWrapper<Role> wrapper = Wrappers.<Role>lambdaQuery()
+                // 查询出来的结果仅包括下面的字段
                 .select(Role::getId).eq(Role::getName, name);
         return roleMapper.selectOne(wrapper);
     }

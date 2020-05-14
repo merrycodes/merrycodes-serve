@@ -3,8 +3,8 @@ package com.merrycodes.service.intf;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.merrycodes.model.entity.Article;
+import com.merrycodes.model.form.ArticleQueryForm;
 import com.merrycodes.model.vo.ArchiveVo;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
@@ -35,12 +35,12 @@ public interface ArticleService extends IService<Article> {
     /**
      * 文章分页查询 (分页)
      *
-     * @param current 当前页数
-     * @param size    当前分页总页数
-     * @param article 文章实体类 {@link Article}
+     * @param current          当前页数
+     * @param size             当前分页总页数
+     * @param articleQueryForm 文章查询表单类 {@link ArticleQueryForm}
      * @return 分页 Page 对象接口 {@link IPage}
      */
-    IPage<Article> selectArticlePage(Integer current, Integer size, Article article);
+    IPage<Article> selectArticlePage(Integer current, Integer size, ArticleQueryForm articleQueryForm);
 
 
     /**

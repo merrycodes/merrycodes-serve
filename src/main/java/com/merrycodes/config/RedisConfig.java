@@ -19,7 +19,7 @@ import java.time.Duration;
  * @date 2020/5/1 14:03
  */
 @Configuration
-public class RedisConfig extends CachingConfigurerSupport {
+public class RedisConfig {
 
     private RedisConnectionFactory connectionFactory;
 
@@ -41,11 +41,4 @@ public class RedisConfig extends CachingConfigurerSupport {
         return redisTemplate;
     }
 
-    @Override
-    public CacheManager cacheManager() {
-        RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofSeconds(120)).disableCachingNullValues();
-        return RedisCacheManager.builder(connectionFactory).cacheDefaults(configuration)
-                .transactionAware().build();
-    }
 }

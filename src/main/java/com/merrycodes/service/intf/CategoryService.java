@@ -3,6 +3,7 @@ package com.merrycodes.service.intf;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.merrycodes.model.entity.Category;
+import com.merrycodes.model.form.CategoryQueryForm;
 import com.merrycodes.model.vo.CategoryVo;
 
 import java.util.List;
@@ -18,12 +19,12 @@ public interface CategoryService extends IService<Category> {
     /**
      * 文章分类分页查询 包括每个分类文章的数目
      *
-     * @param current  当前页数
-     * @param size     当前分页总页数
-     * @param category 文章分类实体类（查询）{@link Category}
+     * @param current           当前页数
+     * @param size              当前分页总页数
+     * @param categoryQueryForm 文章分类查询表单类 {@link CategoryQueryForm}
      * @return 分页 Page 对象接口 {@link IPage}
      */
-    IPage<Category> selectCategoryPageWithCount(Integer current, Integer size, Category category);
+    IPage<Category> selectCategoryPageWithCount(Integer current, Integer size, CategoryQueryForm categoryQueryForm);
 
 
     /**

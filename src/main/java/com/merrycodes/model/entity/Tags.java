@@ -29,13 +29,6 @@ public class Tags extends AbstractBaseEntiry implements Serializable {
     private static final long serialVersionUID = 5439906147142478578L;
 
     /**
-     * 文章标签id
-     */
-    @TableId(type = IdType.AUTO)
-    @ApiModelProperty("文章标签id")
-    private Integer id;
-
-    /**
      * 文章标签名
      */
     @ApiModelProperty("文章标签名")

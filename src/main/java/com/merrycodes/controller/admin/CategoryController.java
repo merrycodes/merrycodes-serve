@@ -2,8 +2,10 @@ package com.merrycodes.controller.admin;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.merrycodes.model.entity.Category;
+import com.merrycodes.model.form.CategoryQueryForm;
 import com.merrycodes.model.vo.PaginationVo;
 import com.merrycodes.model.vo.ResponseVo;
+import com.merrycodes.model.vo.CategoryVo;
 import com.merrycodes.service.intf.CategoryService;
 import com.merrycodes.utils.ResponseUtils;
 import io.swagger.annotations.Api;
@@ -44,14 +46,13 @@ public class CategoryController {
      */
     @PostMapping("/save")
     @ApiOperation(value = "文章分类保存或更新接口", notes = "文章分类保存或更新接口")
-    @ApiImplicitParam(name = "category", value = "文章分类实体类", dataTypeClass = Category.class)
+    @ApiImplicitParam(name = "category", value = "文章分类实体类", required = true, dataTypeClass = Category.class)
     @Caching(evict = {
             @CacheEvict(cacheNames = CACHE_VALUE_ARTICLE, beforeInvocation = true, allEntries = true),
             @CacheEvict(cacheNames = CACHE_VALUE_CATEGORY, beforeInvocation = true, allEntries = true),
             @CacheEvict(cacheNames = CACHE_VALUE_CATEGORY_ARTICLE, beforeInvocation = true, allEntries = true)
     })
     public ResponseVo<Integer> saveOrUpdate(Category category) {
-
         if (!categoryService.saveOrUpdate(category)) {
             log.info("【saveOrUpdate 文章分类 保存/更新 失败】");
         }
@@ -62,34 +63,44 @@ public class CategoryController {
     /**
      * 文章分类列表分页查询接口
      *
-     * @param current  当前页数
-     * @param size     当前分页总条数
-     * @param category 文章分类实体类
-     * @return 文章分类列表实体类
+     * @param current           当前页数
+     * @param size              当前分页总条数
+     * @param categoryQueryForm categoryQueryForm
+     * @return 文章分类列表实体类 (分页) {@link Category}
      */
     @GetMapping
     @ApiOperation(value = "文章分类列表分页查询接口", notes = "文章分类列表分页查询接口")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页数", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "size", value = "当前分页总页数", dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "category", value = "文章分类实体类", dataTypeClass = Category.class)
+            @ApiImplicitParam(name = "categoryQueryForm", value = "文章分类查询表单类", dataTypeClass = CategoryQueryForm.class)
     })
     public ResponseVo<PaginationVo<Category>> selectCategoryPage(@RequestParam(value = "current", defaultValue = "1") Integer current,
                                                                  @RequestParam(value = "size", defaultValue = "10") Integer size,
-                                                                 Category category) {
-        IPage<Category> iPage = categoryService.selectCategoryPageWithCount(current, size, category);
+                                                                 CategoryQueryForm categoryQueryForm) {
+        IPage<Category> iPage = categoryService.selectCategoryPageWithCount(current, size, categoryQueryForm);
         log.info("【selectCategoryPageWithCount 获取文章分类】 总条数={} 当前分页总页数={} 当前页数={}", iPage.getTotal(), iPage.getSize(), iPage.getCurrent());
         return ResponseUtils.success(new PaginationVo<>(iPage));
     }
 
+    /**
+     * 获取文章分类名的全部集合（用于文章列表查询的选项）
+     *
+     * @return 文章分类名实体类 {@link CategoryVo}
+     */
     @GetMapping("/list")
-    @ApiOperation(value = "获取文章分类名字的全部集合（用于文章列表查询的选线）", notes = "获取文章分类名字的全部集合（用于文章列表查询的选线）")
+    @ApiOperation(value = "获取文章分类名字的全部集合（用于文章列表查询的选项）", notes = "获取文章分类名字的全部集合（用于文章列表查询的选项）")
     public ResponseVo<List<String>> categoryNameList() {
         List<String> list = categoryService.selectCategoryNameList();
         log.info("【categoryNameList 获取文章分类名 list={}】", list);
         return ResponseUtils.success(list);
     }
 
+    /**
+     * 获取生效的文章分类名的集合（用于新建文章的选项）
+     *
+     * @return 文章分类名集合
+     */
     @GetMapping("/stausList")
     @ApiOperation(value = "获取生效的文章分类名字的集合（用于新建文章的选项）", notes = "获取生效的文章分类名字的集合（用于新建文章的选项）")
     public ResponseVo<List<String>> categoryNameListByStaus() {

@@ -2,6 +2,7 @@ package com.merrycodes.model.entity.abstracts;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
  * @date 2020/5/5 13:27
  */
 @Data
-public abstract class AbstractSecurityEntiry {
+public abstract class AbstractSecurityEntiry implements Serializable {
 
     /**
      * 创建者，默认当前操作用户

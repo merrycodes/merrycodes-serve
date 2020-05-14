@@ -5,9 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
-import java.util.Locale;
-
 /**
+ * Spring Security 异常信息中文化
+ *
  * @author MerryCodes
  * @date 2020/5/7 12:51
  */

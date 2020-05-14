@@ -40,12 +40,14 @@ public class InitApplicationServiceImpl implements InitApplicationService {
     public void initDataBase() {
         log.info(">>>>>>>>>>>>>>>>>>初始化数据库开始<<<<<<<<<<<<<<<<<<");
         for (RoleTypeEnum value : RoleTypeEnum.values()) {
+            // 判断数据库中是否存在
             if (roleService.exits(value.getName(), value.getDescription())) {
                 log.info(">>>>>>>>>>>>>>>>>>初始化角色 name={},descroption={} 开始<<<<<<<<<<<<<<<<<<", value.getName(), value.getDescription());
                 roleService.save(Role.of(value.getName(), value.getDescription()));
                 log.info(">>>>>>>>>>>>>>>>>>初始化角色结束<<<<<<<<<<<<<<<<<<");
             }
         }
+        // 存在用户则不自动添加用户
         if (userService.count() == 0) {
             log.info(">>>>>>>>>>>>>>>>>>初始化用户表开始<<<<<<<<<<<<<<<<<<");
             User user = User.builder().enabled(true).username("123").password(bCryptPasswordEncoder.encode("123")).build();

@@ -4,6 +4,8 @@ import com.merrycodes.constant.enums.ResponseEnum;
 import lombok.Getter;
 
 /**
+ * 自定义Token异常类
+ *
  * @author MerryCodes
  * @date 2020/5/12 14:21
  */
@@ -13,7 +15,6 @@ public class TokenException extends RuntimeException {
     private final Integer code;
 
     public TokenException(ResponseEnum responseEnum) {
-
         super(responseEnum.getMessage());
         this.code = responseEnum.getCode();
     }

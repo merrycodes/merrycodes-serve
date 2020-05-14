@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.merrycodes.constant.enums.StatusEnum;
 import com.merrycodes.mapper.CategoryMapper;
 import com.merrycodes.model.entity.Category;
+import com.merrycodes.model.form.CategoryQueryForm;
 import com.merrycodes.model.vo.CategoryVo;
 import com.merrycodes.service.intf.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -41,20 +42,20 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
      * 文章分类分页查询 包括每个分类文章的数目
      * 使用 orderByDesc / orderByDesc 编译器会有警告 使用注解抹去
      *
-     * @param current  当前页数
-     * @param size     当前分页总页数
-     * @param category 文章分类实体类（查询）{@link Category}
+     * @param current           当前页数
+     * @param size              当前分页总页数
+     * @param categoryQueryForm 文章分类查询表单类 {@link CategoryQueryForm}
      * @return 分页 Page 对象接口 {@link IPage}
      * @see <a href="https://github.com/baomidou/mybatis-plus/issues/467">参考链接</a>
      */
     @Override
     @SuppressWarnings("unchecked")
-    @Cacheable(cacheNames = CACHE_VALUE_CATEGORY, key = "'categoryList['+#current+':'+#size+':'+#category+']'")
-    public IPage<Category> selectCategoryPageWithCount(Integer current, Integer size, Category category) {
+    @Cacheable(cacheNames = CACHE_VALUE_CATEGORY, key = "'categoryList['+#current+':'+#size+':'+#categoryQueryForm+']'")
+    public IPage<Category> selectCategoryPageWithCount(Integer current, Integer size, CategoryQueryForm categoryQueryForm) {
         Page<Category> categoryPage = new Page<>(current, size);
         LambdaQueryWrapper<Category> wrapper = Wrappers.lambdaQuery();
         // 前端传来的排序数据 example sortMap = {name=update, sort=desc})
-        Map<String, String> sortMap = category.getSort();
+        Map<String, String> sortMap = categoryQueryForm.getSort();
         // count 字段排序
         String countSort = null;
         if (sortMap != null) {
@@ -71,7 +72,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
                 countSort = sortMap.get(SORT_KEY);
             }
         }
-        return categoryMapper.selectCategoryPageWithCount(categoryPage, wrapper, countSort, category.getStatus(), category.getName());
+        return categoryMapper.selectCategoryPageWithCount(categoryPage, wrapper, countSort, categoryQueryForm.getStatus(), categoryQueryForm.getName());
     }
 
     /**
@@ -83,6 +84,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @Cacheable(cacheNames = CACHE_VALUE_CATEGORY, key = "'categoriesList'")
     public List<String> selectCategoryNameList() {
         LambdaQueryWrapper<Category> wrapper = Wrappers.<Category>lambdaQuery()
+                // 查询出来的结果仅包括下面的字段
                 .select(Category::getName).orderByAsc(Category::getName);
         List<Category> categoryList = categoryMapper.selectList(wrapper);
         return categoryList.stream().map(Category::getName).collect(Collectors.toList());
@@ -97,6 +99,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @Cacheable(cacheNames = CACHE_VALUE_CATEGORY, key = "'categoriesListByStatus'")
     public List<String> selectCategoryNameListByStatus() {
         LambdaQueryWrapper<Category> wrapper = Wrappers.<Category>lambdaQuery()
+                // 查询出来的结果仅包括下面的字段
                 .select(Category::getName).eq(Category::getStatus, StatusEnum.VALID.getCode())
                 .orderByAsc(Category::getName);
         List<Category> categoryList = categoryMapper.selectList(wrapper);

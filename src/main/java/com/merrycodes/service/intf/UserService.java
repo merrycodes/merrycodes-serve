@@ -17,7 +17,7 @@ public interface UserService extends IService<User>, UserDetailsService {
     /**
      * 获取当前用户的角色
      *
-     * @return 用户对象
+     * @return 用户的数组
      */
     String[] selectUserRole();
 

@@ -64,7 +64,7 @@ public class JwtUtils {
         try {
             return Jwts.parserBuilder().setSigningKey(publicKey).build().parseClaimsJws(token).getBody();
         } catch (MalformedJwtException | SignatureException | ExpiredJwtException | IllegalArgumentException e) {
-            throw new TokenException(ResponseEnum.ILLEGAL_TOKEN);
+            throw new TokenException(ResponseEnum.ILLEGAL_TOKEN.getCode(), e.getMessage());
         }
     }
 
@@ -77,7 +77,6 @@ public class JwtUtils {
      * @return {@link JwtPayload}
      */
     public static JwtPayload getUserFromToken(String token, String key, PublicKey publicKey) throws TokenException {
-
         Claims body = parserToken(token, publicKey);
         return JwtPayload.builder().id(body.getId())
                 .user(JsonUtils.readValue(body.get(key).toString(),

@@ -29,13 +29,6 @@ public class Category extends AbstractBaseEntiry implements Serializable {
     private static final long serialVersionUID = -5089249540992174478L;
 
     /**
-     * 文章分类id
-     */
-    @TableId(type = IdType.AUTO)
-    @ApiModelProperty("文章分类id")
-    private Integer id;
-
-    /**
      * 文章分类名
      */
     @ApiModelProperty("文章分类名")

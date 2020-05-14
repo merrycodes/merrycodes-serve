@@ -2,6 +2,7 @@ package com.merrycodes.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.merrycodes.model.entity.Tags;
+import com.merrycodes.model.form.TagsQueryForm;
 import com.merrycodes.service.intf.TagsService;
 import com.merrycodes.model.vo.PaginationVo;
 import org.junit.Test;
@@ -35,13 +36,13 @@ public class TagsServiceImplTest {
 
     @Test
     public void selectTagsPageWithCount() {
-        Tags tags = new Tags();
-        tags.setStatus(1);
+        TagsQueryForm tagsQueryForm = new TagsQueryForm();
+        tagsQueryForm.setStatus(1);
         Map<String, String> map = new HashMap<>();
         map.put("name", "update");
         map.put("sort", "asc");
-        tags.setSort(map);
-        IPage<Tags> iPage = tagsService.selectTagsPageWithCount(1, 10, tags);
+        tagsQueryForm.setSort(map);
+        IPage<Tags> iPage = tagsService.selectTagsPageWithCount(1, 10, tagsQueryForm);
         PaginationVo<Tags> paginationVo = new PaginationVo<>(iPage);
         System.out.printf("当前页数:%d\n", paginationVo.getCurrent());
         System.out.printf("当前分页总页数:%d\n", paginationVo.getSize());

@@ -2,6 +2,7 @@ package com.merrycodes.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.merrycodes.model.entity.Article;
+import com.merrycodes.model.form.ArticleQueryForm;
 import com.merrycodes.model.vo.ArchiveVo;
 import com.merrycodes.model.vo.PaginationVo;
 import com.merrycodes.service.intf.ArticleService;
@@ -9,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public class ArticleServiceImplTest {
 
     @Test
     public void selectArticlePage() {
-        IPage<Article> iPage = articleService.selectArticlePage(1, 10, new Article());
+        IPage<Article> iPage = articleService.selectArticlePage(1, 10, new ArticleQueryForm());
         PaginationVo<Article> paginationVo = new PaginationVo<>(iPage);
         assertTrue(paginationVo.getList().size() <= 10);
     }
