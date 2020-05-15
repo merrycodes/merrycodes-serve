@@ -2,6 +2,7 @@ package com.merrycodes.service.intf;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.merrycodes.model.entity.User;
+import com.merrycodes.model.form.ChangePasswordForm;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -20,5 +21,15 @@ public interface UserService extends IService<User>, UserDetailsService {
      * @return 用户的数组
      */
     String[] selectUserRole();
+
+
+    /**
+     * 修改密码
+     *
+     * @param changePasswordForm 修改密码表单类
+     * @param username           用户名
+     * @return 是否修改密码成功
+     */
+    Boolean changePassword(ChangePasswordForm changePasswordForm, String username);
 
 }

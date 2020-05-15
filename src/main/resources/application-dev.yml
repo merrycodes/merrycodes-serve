@@ -15,10 +15,10 @@ spring:
     password:
     timeout: 3000
 jwt:
-  auth-login-url: /admin/auth/login
-  auth-logout-url: /admin/auth/logout
-  public-key-path: D:\MerryCodes\rsa_key.pub
-  private-key-path: D:\MerryCodes\rsa_key
+  auth-login-url:
+  auth-logout-url:
+  public-key-path:
+  private-key-path:
   jwt-payload-user-key: user
   #  没有选择 '记住我' 24 * 60 一天
   expiration: 1440

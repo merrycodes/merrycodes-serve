@@ -51,7 +51,7 @@ public class LoginAuthenticationFilter extends UsernamePasswordAuthenticationFil
             throws AuthenticationException {
         try {
             // TODO: MerryCodes 2020-05-12 09:22:10 remember-me
-            // 表当获取用户名和密码
+            // 表单获取用户名和密码
             LoginForm loginForm = JsonUtils.readValue(request.getInputStream(), LoginForm.class).orElseThrow(NullPointerException::new);
             User user = new User();
             BeanUtils.copyProperties(loginForm, user);

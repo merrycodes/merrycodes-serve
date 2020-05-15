@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,7 +33,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
 
-    private final CostomLogoutSuccessHandler costomLogoutSuccessHandler;
+    private CostomLogoutSuccessHandler costomLogoutSuccessHandler;
+
+    /**
+     * 解决循环依赖
+     */
+    @Lazy
+    @Autowired
+    public void setCostomLogoutSuccessHandler(CostomLogoutSuccessHandler costomLogoutSuccessHandler) {
+        this.costomLogoutSuccessHandler = costomLogoutSuccessHandler;
+    }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {

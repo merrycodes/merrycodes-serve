@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
- * 分类查询表当类
+ * 分类查询表单类
  *
  * @author MerryCodes
  * @date 2020/5/13 20:22

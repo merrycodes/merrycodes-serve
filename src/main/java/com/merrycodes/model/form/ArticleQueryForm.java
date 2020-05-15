@@ -16,7 +16,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(description = "文章查询表当类")
+@ApiModel(description = "文章查询表单类")
 public class ArticleQueryForm extends AbstractSortForm {
 
     /**
