@@ -18,7 +18,7 @@ import java.util.List;
  * @date 2020/4/22 22:21
  */
 @Data
-@ApiModel("文章分类对象模型")
+@ApiModel(description = "文章分类对象模型")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CategoryVo implements Serializable {
 
