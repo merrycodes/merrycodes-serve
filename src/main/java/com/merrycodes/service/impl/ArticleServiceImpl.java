@@ -46,7 +46,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * @return 文章实体类 {@link Article}
      */
     @Override
-    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'article['+#id+']'")
+    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'front::articleInfo['+#id+']'")
     public Article selectArticleInfo(Integer id) {
         LambdaQueryWrapper<Article> wrapper = Wrappers.<Article>lambdaQuery()
                 // 查询出来的结果不包括下面的字段
@@ -64,7 +64,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * @return 文章实体类 {@link Article}
      */
     @Override
-    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'articleEdit['+#id+']'")
+    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'admin::articleInfo['+#id+']'")
     public Article selectEditArticleInfo(Integer id) {
         LambdaQueryWrapper<Article> wrapper = Wrappers.<Article>lambdaQuery()
                 // 查询出来的结果不包括下面的字段
@@ -87,7 +87,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      */
     @Override
     @SuppressWarnings("unchecked")
-    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'adminArticleList['+#current+':'+#size+':'+#articleQueryForm+']'")
+    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'admin::ArticleList['+#current+':'+#size+':'+#articleQueryForm+']'")
     public IPage<Article> selectArticlePage(Integer current, Integer size, ArticleQueryForm articleQueryForm) {
         Page<Article> page = new Page<>(current, size);
         LambdaQueryWrapper<Article> wrapper = Wrappers.<Article>lambdaQuery()
@@ -124,7 +124,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * @return 文章集合
      */
     @Override
-    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'ArticleListForSEO'")
+    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'front::ArticleListForSEO'")
     public List<Article> selectArticleList() {
         LambdaQueryWrapper<Article> wrapper = Wrappers.<Article>lambdaQuery()
                 // 查询出来的结果仅包括下面的字段
@@ -141,7 +141,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * @return 分页 Page 对象接口 {@link IPage}
      */
     @Override
-    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'frontArticleList['+#current+':'+#size+']'")
+    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'front::ArticleList['+#current+':'+#size+']'")
     public IPage<Article> selectArticlePageByStatus(Integer current, Integer size) {
         Page<Article> page = new Page<>(current, size);
         LambdaQueryWrapper<Article> wrapper = Wrappers.<Article>lambdaQuery()
@@ -161,7 +161,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * @return 文章归档列表 {@link ArchiveVo}
      */
     @Override
-    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'frontArchiveList'")
+    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'front::ArchiveList'")
     public List<ArchiveVo> selectArchiveList() {
         // 查询所有发布的文章集合
         List<Article> articleList = selectArticleListByStatus();
@@ -192,7 +192,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      *
      * @return 文章集合
      */
-    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'ArticleListForArchive'")
+    @Cacheable(cacheNames = CACHE_VALUE_ARTICLE, key = "'front::ArticleListForArchive'")
     public List<Article> selectArticleListByStatus() {
         LambdaQueryWrapper<Article> wrapper = Wrappers.<Article>lambdaQuery()
                 // 查询出来的结果仅包括下面的字段

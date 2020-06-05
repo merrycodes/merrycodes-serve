@@ -51,7 +51,7 @@ public class TagsServiceImpl extends ServiceImpl<TagsMapper, Tags> implements Ta
      */
     @Override
     @SuppressWarnings("unchecked")
-    @Cacheable(cacheNames = CACHE_VALUE_TAG, key = "'tagsList['+#current+':'+#size+':'+#tagsQueryForm+']'")
+    @Cacheable(cacheNames = CACHE_VALUE_TAG, key = "'admin::tagsList['+#current+':'+#size+':'+#tagsQueryForm+']'")
     public IPage<Tags> selectTagsPageWithCount(Integer current, Integer size, TagsQueryForm tagsQueryForm) {
         Page<Tags> tagsPage = new Page<>(current, size);
         LambdaQueryWrapper<Tags> wrapper = Wrappers.lambdaQuery();
@@ -78,7 +78,7 @@ public class TagsServiceImpl extends ServiceImpl<TagsMapper, Tags> implements Ta
     }
 
     @Override
-    @Cacheable(cacheNames = CACHE_VALUE_TAG, key = "'tagsList'")
+    @Cacheable(cacheNames = CACHE_VALUE_TAG, key = "'admin::tagsList'")
     public List<String> selectTagsNameList() {
         LambdaQueryWrapper<Tags> wrapper = Wrappers.<Tags>lambdaQuery()
                 // 查询到数据不为空则更新
@@ -88,7 +88,7 @@ public class TagsServiceImpl extends ServiceImpl<TagsMapper, Tags> implements Ta
     }
 
     @Override
-    @Cacheable(cacheNames = CACHE_VALUE_TAG, key = "'tagsListByStatus'")
+    @Cacheable(cacheNames = CACHE_VALUE_TAG, key = "'admin::tagsListByStatus'")
     public List<String> selectTagsNameListByStatus() {
         LambdaQueryWrapper<Tags> wrapper = Wrappers.<Tags>lambdaQuery()
                 // 查询到数据不为空则更新
@@ -104,7 +104,7 @@ public class TagsServiceImpl extends ServiceImpl<TagsMapper, Tags> implements Ta
      * @return 文章标签对象模型
      */
     @Override
-    @Cacheable(cacheNames = CACHE_VALUE_TAG_ARTICLE, key = "'tagsWithArticle'")
+    @Cacheable(cacheNames = CACHE_VALUE_TAG_ARTICLE, key = "'front::tagsWithArticle'")
     public List<TagsVo> selectTagsWithArticle() {
         return tagsMapper.selectTagsWithArticle();
     }

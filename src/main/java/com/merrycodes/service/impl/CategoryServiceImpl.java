@@ -50,7 +50,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
      */
     @Override
     @SuppressWarnings("unchecked")
-    @Cacheable(cacheNames = CACHE_VALUE_CATEGORY, key = "'categoryList['+#current+':'+#size+':'+#categoryQueryForm+']'")
+    @Cacheable(cacheNames = CACHE_VALUE_CATEGORY, key = "'admin::categoryList['+#current+':'+#size+':'+#categoryQueryForm+']'")
     public IPage<Category> selectCategoryPageWithCount(Integer current, Integer size, CategoryQueryForm categoryQueryForm) {
         Page<Category> categoryPage = new Page<>(current, size);
         LambdaQueryWrapper<Category> wrapper = Wrappers.lambdaQuery();
@@ -82,7 +82,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
      * @return 文章分类名集合
      */
     @Override
-    @Cacheable(cacheNames = CACHE_VALUE_CATEGORY, key = "'categoriesList'")
+    @Cacheable(cacheNames = CACHE_VALUE_CATEGORY, key = "'admin::categoriesList'")
     public List<String> selectCategoryNameList() {
         LambdaQueryWrapper<Category> wrapper = Wrappers.<Category>lambdaQuery()
                 // 查询出来的结果仅包括下面的字段
@@ -97,7 +97,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
      * @return 文章分类名集合
      */
     @Override
-    @Cacheable(cacheNames = CACHE_VALUE_CATEGORY, key = "'categoriesListByStatus'")
+    @Cacheable(cacheNames = CACHE_VALUE_CATEGORY, key = "'admin::categoriesListByStatus'")
     public List<String> selectCategoryNameListByStatus() {
         LambdaQueryWrapper<Category> wrapper = Wrappers.<Category>lambdaQuery()
                 // 查询出来的结果仅包括下面的字段
@@ -113,7 +113,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
      * @return 文章标签对象模型
      */
     @Override
-    @Cacheable(cacheNames = CACHE_VALUE_CATEGORY_ARTICLE, key = "'categoryWithArticle'")
+    @Cacheable(cacheNames = CACHE_VALUE_CATEGORY_ARTICLE, key = "'front::categoryWithArticle'")
     public List<CategoryVo> selectCategoryWithArticle() {
         return categoryMapper.selectCategoryWithArticle();
     }
