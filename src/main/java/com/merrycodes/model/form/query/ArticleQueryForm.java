@@ -1,4 +1,4 @@
-package com.merrycodes.model.form;
+package com.merrycodes.model.form.query;
 
 import com.merrycodes.model.form.abstracts.AbstractSortForm;
 import com.merrycodes.utils.ToStringStyleUtils;

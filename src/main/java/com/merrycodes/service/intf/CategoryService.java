@@ -3,7 +3,7 @@ package com.merrycodes.service.intf;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.merrycodes.model.entity.Category;
-import com.merrycodes.model.form.CategoryQueryForm;
+import com.merrycodes.model.form.query.CategoryQueryForm;
 import com.merrycodes.model.vo.CategoryVo;
 
 import java.util.List;

@@ -15,10 +15,10 @@
 
     <select id="selectBynameWithRole" resultMap="mapper" parameterType="java.lang.String">
         SELECT a.id, a.username, a.password, a.enabled, c.name, c.description
-        from user a
-                 left join user_role b on a.id = b.user_id
-                 left join role c on b.role_id = c.id
-        where username = #{username}
+        FROM user a
+                 LEFT JOIN user_role b ON a.id = b.user_id
+                 LEFT JOIN role c ON b.role_id = c.id
+        WHERE username = #{username}
     </select>
 
 </mapper>

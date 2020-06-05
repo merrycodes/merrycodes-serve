@@ -2,7 +2,7 @@ package com.merrycodes.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.merrycodes.model.entity.Article;
-import com.merrycodes.model.form.ArticleQueryForm;
+import com.merrycodes.model.form.query.ArticleQueryForm;
 import com.merrycodes.model.vo.ArchiveVo;
 import com.merrycodes.model.vo.PaginationVo;
 import com.merrycodes.service.intf.ArticleService;

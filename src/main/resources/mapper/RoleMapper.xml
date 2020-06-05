@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.merrycodes.mapper.RoleMapper">
+
+    <resultMap id="mapper" type="com.merrycodes.model.vo.RoleVo">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <collection property="userList" ofType="com.merrycodes.model.entity.User">
+            <id column="userId" property="id" jdbcType="INTEGER"/>
+            <result column="username" property="username" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectRolePageWithUserCount" resultMap="mapper">
+        select a.id, a.name, a.description, c.id as userId, c.username
+        from role a
+        left join user_role b on a.id = b.role_id
+        left join user c on b.user_id = c.id
+        <where>
+            <if test="ew.SqlSegment != null">
+                AND ${ew.SqlSegment}
+            </if>
+            AND c.enabled = true
+        </where>
+        order by a.id
+    </select>
+</mapper>

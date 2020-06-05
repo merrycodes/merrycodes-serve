@@ -1,4 +1,4 @@
-package com.merrycodes.model.form;
+package com.merrycodes.model.form.query;
 
 import com.merrycodes.model.form.abstracts.AbstractSortForm;
 import com.merrycodes.utils.ToStringStyleUtils;
@@ -9,33 +9,25 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
- * 分类查询表单类
+ * 用户查询表单类
  *
  * @author MerryCodes
- * @date 2020/5/13 20:22
+ * @date 2020/5/16 22:59
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(description = "文章分类查询表单类")
-public class CategoryQueryForm extends AbstractSortForm {
+@ApiModel(description = "用户查询表单类")
+public class UserQueryForm extends AbstractSortForm {
 
     /**
-     * 文章分类状态
-     * 0 表示分类失效，1 表示分类生效
-     *
-     * @see com.merrycodes.constant.enums.StatusEnum
+     * 用户名
      */
-    @ApiModelProperty("文章分类状态")
-    private Integer status;
-
-    /**
-     * 文章分类名
-     */
-    @ApiModelProperty("文章分类名")
-    private String name;
+    @ApiModelProperty("用户名")
+    private String username;
 
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyleUtils.NO_NULL_STYLE);
     }
+
 }

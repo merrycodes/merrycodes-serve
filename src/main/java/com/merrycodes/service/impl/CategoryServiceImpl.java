@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.merrycodes.constant.enums.StatusEnum;
 import com.merrycodes.mapper.CategoryMapper;
 import com.merrycodes.model.entity.Category;
-import com.merrycodes.model.form.CategoryQueryForm;
+import com.merrycodes.model.form.query.CategoryQueryForm;
 import com.merrycodes.model.vo.CategoryVo;
 import com.merrycodes.service.intf.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -69,6 +69,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
                 wrapper.orderByAsc(StringUtils.equals(ASC, sortMap.get(SORT_KEY)), Category::getUpdateTime)
                         .orderByDesc(StringUtils.equals(DESC, sortMap.get(SORT_KEY)), Category::getUpdateTime);
             } else {
+                // 文章数排序
                 countSort = sortMap.get(SORT_KEY);
             }
         }

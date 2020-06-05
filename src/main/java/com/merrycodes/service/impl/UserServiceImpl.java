@@ -1,19 +1,27 @@
 package com.merrycodes.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.merrycodes.mapper.UserMapper;
 import com.merrycodes.model.entity.Role;
 import com.merrycodes.model.entity.User;
 import com.merrycodes.model.form.ChangePasswordForm;
+import com.merrycodes.model.form.UserForm;
+import com.merrycodes.model.form.query.UserQueryForm;
+import com.merrycodes.service.intf.UserRoleService;
 import com.merrycodes.service.intf.UserService;
 import com.merrycodes.utils.CurrentUserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,7 +29,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.merrycodes.constant.consist.CacheValueConsist.CACHE_VALUE_USER;
+import java.util.List;
+import java.util.Map;
+
+import static com.merrycodes.constant.consist.CacheValueConsist.*;
+import static com.merrycodes.constant.consist.SortMapConsist.*;
 
 /**
  * 用户service实现类接口
@@ -35,6 +47,8 @@ import static com.merrycodes.constant.consist.CacheValueConsist.CACHE_VALUE_USER
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     private final UserMapper userMapper;
+
+    private final UserRoleService userRoleService;
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -57,6 +71,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     @Cacheable(cacheNames = CACHE_VALUE_USER, key = "'username['+#username+']'")
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // TODO: MerryCodes 2020-05-23 23:56:57 用户角色不为空时，保存到Redis中
         User user = userMapper.selectBynameWithRole(username);
         if (user == null) {
             throw new UsernameNotFoundException("");
@@ -65,12 +80,43 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     /**
+     * 用户分页查询
+     * 使用 orderByDesc / orderByDesc 编译器会有警告 使用注解抹去
+     *
+     * @param current       当前页数
+     * @param size          当前分页总页数
+     * @param userQueryForm 用户查询表单类
+     * @return 分页 Page 对象接口 {@link IPage}
+     * @see <a href="https://github.com/baomidou/mybatis-plus/issues/467">参考链接</a>
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    @Cacheable(cacheNames = CACHE_VALUE_USER, key = "'userList['+#current+':'+#size+':'+#userQueryForm+']'")
+    public IPage<User> selectUserPage(Integer current, Integer size, UserQueryForm userQueryForm) {
+        String username = userQueryForm.getUsername();
+        Page<User> userPage = new Page<>(current, size);
+        LambdaQueryWrapper<User> wrapper = Wrappers.<User>lambdaQuery()
+                .select(User.class, user -> !StringUtils.equals("password", user.getColumn()) &&
+                        !StringUtils.equals("update_time", user.getColumn()))
+                .eq(StringUtils.isNotEmpty(username), User::getUsername, username);
+        // 前端传来的排序数据 example sortMap = {name=update, sort=desc})
+        Map<String, String> sortMap = userQueryForm.getSort();
+        if (sortMap != null) {
+            if (StringUtils.equals(LAST_LOGIN_TIME, sortMap.get(NAME_KEY))) {
+                wrapper.orderByAsc(StringUtils.equals(ASC, sortMap.get(SORT_KEY)), User::getLastLoginTime)
+                        .orderByDesc(StringUtils.equals(DESC, sortMap.get(SORT_KEY)), User::getLastLoginTime);
+            }
+        }
+        return userMapper.selectPage(userPage, wrapper);
+    }
+
+    /**
      * 获取当前用户的角色
      *
      * @return 用户角色数组
      */
     @Override
-    @Cacheable(cacheNames = CACHE_VALUE_USER, key = "'userRoles['+target.getCurrentusername()+']'")
+    @Cacheable(cacheNames = CACHE_VALUE_USER_ROLE, key = "'userRoles['+target.getCurrentusername()+']'")
     public String[] selectUserRole() {
         String currentusername = getCurrentusername();
         User user = userMapper.selectBynameWithRole(currentusername);
@@ -87,7 +133,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(cacheNames = CACHE_VALUE_USER, key = "'username['+#username+']'",allEntries = true)
+    @CacheEvict(cacheNames = CACHE_VALUE_USER, key = "'username['+#username+']'", allEntries = true)
     public Boolean changePassword(ChangePasswordForm changePasswordForm, String username) {
         // 前端传入的密码
         String oldPassword = changePasswordForm.getOldPassword();
@@ -105,10 +151,69 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return false;
     }
 
+    /**
+     * 新建用户
+     *
+     * @param userForm 用户表单类
+     * @return 新建用户的id
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer saveUser(UserForm userForm) {
+        // 设置加密后的密码
+        userForm.setPassword(bCryptPasswordEncoder.encode(userForm.getPassword()));
+        // 构建新的User对象
+        User user = new User();
+        // 复制对象
+        BeanUtils.copyProperties(userForm, user);
+        // 获取当前用户名
+        String currentusername = getCurrentusername();
+        user.setCreateBy(currentusername);
+        user.setUpdateBy(currentusername);
+        user.setEnabled(true);
+        return userMapper.insert(user);
+    }
+
+    /**
+     * 更新用户是否可用
+     *
+     * @param userForm 用户表单类
+     * @return 是否更新成功
+     */
+    @Override
+    @CacheEvict(cacheNames = CACHE_VALUE_USER, beforeInvocation = true, allEntries = true)
+    public Boolean updateUserEnable(UserForm userForm) {
+        User user = new User();
+        BeanUtils.copyProperties(userForm, user);
+        user.setUpdateBy(getCurrentusername());
+        return userMapper.updateById(user) > 0;
+    }
+
+    /**
+     * 更新用户角色
+     *
+     * @param userId  用户id
+     * @param roleIds 角色id集合
+     */
+    @Override
+    @Caching(evict = {
+            @CacheEvict(cacheNames = CACHE_VALUE_USER_ROLE, beforeInvocation = true, allEntries = true),
+            @CacheEvict(cacheNames = CACHE_VALUE_ROLE, beforeInvocation = true, key = "'roleByUserId['+#userId+']'")
+    })
+    public void updateUserRole(Integer userId, List<Integer> roleIds) {
+        // 先删除对应用户的用户角色表中的数据
+        userRoleService.deleteByUserId(userId);
+        // 随后插入新的数据
+        if (roleIds.size() != 0) {
+            userRoleService.insertBatch(userId, roleIds);
+        }
+    }
+
     private void changePassword(User user, String username, String password) {
         LambdaQueryWrapper<User> wrapper = Wrappers.<User>lambdaQuery()
                 .eq(User::getUsername, username);
         user.setPassword(password);
+        user.setUpdateBy(getCurrentusername());
         userMapper.update(user, wrapper);
     }
 

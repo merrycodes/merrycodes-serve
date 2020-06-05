@@ -14,11 +14,17 @@ spring:
     port: 6379
     password:
     timeout: 3000
+# log
+logging:
+  level:
+    com.merrycodes.mapper: trace
+  file: 自定义存储日志路径
+#  Jwt
 jwt:
-  auth-login-url:
-  auth-logout-url:
-  public-key-path:
-  private-key-path:
+  auth-login-url: 自定义登录路径
+  auth-logout-url: 自定义登录路径
+  public-key-path: 自定义公钥路径
+  private-key-path: 自定义私钥路径
   jwt-payload-user-key: user
   #  没有选择 '记住我' 24 * 60 一天
   expiration: 1440

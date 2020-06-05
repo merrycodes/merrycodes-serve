@@ -2,7 +2,7 @@ package com.merrycodes.controller.admin;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.merrycodes.model.entity.Category;
-import com.merrycodes.model.form.CategoryQueryForm;
+import com.merrycodes.model.form.query.CategoryQueryForm;
 import com.merrycodes.model.vo.PaginationVo;
 import com.merrycodes.model.vo.ResponseVo;
 import com.merrycodes.model.vo.CategoryVo;
@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,7 +45,8 @@ public class CategoryController {
      * @param category 文章分类实体类 {@link Category}
      * @return 文章分类id
      */
-    @PostMapping("/save")
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "文章分类保存或更新接口", notes = "文章分类保存或更新接口")
     @ApiImplicitParam(name = "category", value = "文章分类实体类", required = true, dataTypeClass = Category.class)
     @Caching(evict = {
@@ -53,6 +55,7 @@ public class CategoryController {
             @CacheEvict(cacheNames = CACHE_VALUE_CATEGORY_ARTICLE, beforeInvocation = true, allEntries = true)
     })
     public ResponseVo<Integer> saveOrUpdate(Category category) {
+        // TODO: MerryCodes 2020-06-03 08:46:05 查询文章是否还有使用该分类的文章，如果有则提示用户不能修改此分类，如果没有则运行修改逻辑
         if (!categoryService.saveOrUpdate(category)) {
             log.info("【saveOrUpdate 文章分类 保存/更新 失败】");
         }

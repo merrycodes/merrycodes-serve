@@ -3,6 +3,7 @@ package com.merrycodes.mapper;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.merrycodes.model.entity.Tags;
 import com.merrycodes.model.vo.TagsVo;
@@ -30,7 +31,7 @@ public interface TagsMapper extends BaseMapper<Tags> {
      * @param name      文章标签的名字 （用于查询）
      * @return 分页 Page 对象接口 {@link IPage}
      */
-    IPage<Tags> selectTagsPageWithCont(Page<Tags> page, @Param("ew") Wrapper<Tags> wrapper,
+    IPage<Tags> selectTagsPageWithCont(Page<Tags> page, @Param(Constants.WRAPPER) Wrapper<Tags> wrapper,
                                        @Param("countSort") String countSort, @Param("staus") Integer status,
                                        @Param("name") String name);
 

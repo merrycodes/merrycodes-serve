@@ -33,9 +33,14 @@ public enum ResponseEnum implements CodeEnum {
     ACCESS_DENIED(50012, "权限不足"),
 
     /**
+     * 50014 用户没有角色
+     */
+    USER_HAS_NO_ROLE(50016, "用户没有角色,登录失败"),
+
+    /**
      * 50016 表示未登录
      */
-    NOT_LOGIN_IN(50016, "请登录"),
+    NO_LOGIN_IN(50016, "请登录"),
     ;
 
     private final Integer code;

@@ -2,7 +2,7 @@ package com.merrycodes.controller.admin;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.merrycodes.model.entity.Article;
-import com.merrycodes.model.form.ArticleQueryForm;
+import com.merrycodes.model.form.query.ArticleQueryForm;
 import com.merrycodes.model.vo.PaginationVo;
 import com.merrycodes.model.vo.ResponseVo;
 import com.merrycodes.service.intf.ArticleService;
@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.merrycodes.constant.consist.CacheValueConsist.*;
@@ -41,7 +42,8 @@ public class ArticleController {
      * @param article 文章实体类
      * @return 文章id
      */
-    @PostMapping("save")
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "文章保存或更新接口", notes = "文章保存或更新接口")
     @ApiImplicitParam(name = "article", value = "文章实体类", required = true, dataTypeClass = Article.class)
     @Caching(evict = {
@@ -65,6 +67,7 @@ public class ArticleController {
      * @return 文章实体类 {@link Article}
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "获取文章详情接口", notes = "获取文章详情接口")
     @ApiImplicitParam(name = "id", value = "文章id", required = true, dataTypeClass = String.class)
     public ResponseVo<Article> info(@PathVariable("id") Integer id) {

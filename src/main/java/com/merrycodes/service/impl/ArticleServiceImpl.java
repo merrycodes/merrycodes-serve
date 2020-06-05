@@ -9,7 +9,7 @@ import com.google.common.collect.Lists;
 import com.merrycodes.constant.enums.ArticleEnum;
 import com.merrycodes.mapper.ArticleMapper;
 import com.merrycodes.model.entity.Article;
-import com.merrycodes.model.form.ArticleQueryForm;
+import com.merrycodes.model.form.query.ArticleQueryForm;
 import com.merrycodes.model.vo.ArchiveVo;
 import com.merrycodes.service.intf.ArticleService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -2,16 +2,17 @@ package com.merrycodes.config;
 
 import com.merrycodes.filter.LoginAuthenticationFilter;
 import com.merrycodes.filter.TokenAuthenticationFilter;
+import com.merrycodes.handler.CostomAccessDeniedHandler;
+import com.merrycodes.handler.CostomAuthenticationEntryPointHandler;
 import com.merrycodes.handler.CostomLogoutSuccessHandler;
 import com.merrycodes.service.intf.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -26,6 +27,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  */
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -78,6 +80,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout().logoutUrl(jwtConfig.getAuthLogoutUrl())
                 .logoutSuccessHandler(costomLogoutSuccessHandler)
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .exceptionHandling().accessDeniedHandler(new CostomAccessDeniedHandler()).authenticationEntryPoint(new CostomAuthenticationEntryPointHandler());
     }
 }

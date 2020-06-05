@@ -22,4 +22,8 @@ public interface CacheValueConsist {
 
     String CACHE_VALUE_USER = "user";
 
+    String CACHE_VALUE_ROLE = "role";
+
+    String CACHE_VALUE_USER_ROLE = "userRole";
+
 }

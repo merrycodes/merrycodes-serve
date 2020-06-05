@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -50,12 +49,12 @@ public class InitApplicationServiceImpl implements InitApplicationService {
         // 存在用户则不自动添加用户
         if (userService.count() == 0) {
             log.info(">>>>>>>>>>>>>>>>>>初始化用户表开始<<<<<<<<<<<<<<<<<<");
-            User user = User.builder().enabled(true).username("123").password(bCryptPasswordEncoder.encode("123")).build();
+            User user = User.builder().enabled(true).username("system").password(bCryptPasswordEncoder.encode("123456")).build();
             userService.save(user);
             log.info(">>>>>>>>>>>>>>>>>>初始化用户表结束<<<<<<<<<<<<<<<<<<");
 
             log.info(">>>>>>>>>>>>>>>>>>初始化用户角色表开始<<<<<<<<<<<<<<<<<<");
-            Role role = roleService.findByName(RoleTypeEnum.ADMIN.getName());
+            Role role = roleService.selectByName(RoleTypeEnum.ADMIN.getName());
             userRoleService.save(UserRole.of(user.getId(), role.getId()));
             log.info(">>>>>>>>>>>>>>>>>>初始化用户角色表结束<<<<<<<<<<<<<<<<<<");
         }

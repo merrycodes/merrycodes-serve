@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.merrycodes.constant.enums.StatusEnum;
 import com.merrycodes.mapper.TagsMapper;
 import com.merrycodes.model.entity.Tags;
-import com.merrycodes.model.form.TagsQueryForm;
+import com.merrycodes.model.form.query.TagsQueryForm;
 import com.merrycodes.model.vo.TagsVo;
 import com.merrycodes.service.intf.TagsService;
 import lombok.RequiredArgsConstructor;
@@ -70,6 +70,7 @@ public class TagsServiceImpl extends ServiceImpl<TagsMapper, Tags> implements Ta
                 wrapper.orderByAsc(StringUtils.equals(ASC, sortMap.get(SORT_KEY)), Tags::getCreateTime)
                         .orderByDesc(StringUtils.equals(DESC, sortMap.get(SORT_KEY)), Tags::getCreateTime);
             } else {
+                // 文章数排序
                 countSort = sortMap.get(SORT_KEY);
             }
         }

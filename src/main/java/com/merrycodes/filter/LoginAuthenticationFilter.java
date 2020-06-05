@@ -1,6 +1,7 @@
 package com.merrycodes.filter;
 
 import com.merrycodes.config.JwtConfig;
+import com.merrycodes.constant.enums.ResponseEnum;
 import com.merrycodes.model.entity.Role;
 import com.merrycodes.model.entity.User;
 import com.merrycodes.model.form.LoginForm;
@@ -69,12 +70,19 @@ public class LoginAuthenticationFilter extends UsernamePasswordAuthenticationFil
     @Override
     public void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                          FilterChain chain, Authentication authResult) throws IOException {
+        // 判断用户是否拥有角色，没有则处理
+        if (authResult.getAuthorities().size() == 0) {
+            String jsonString = JsonUtils.writeValue(ResponseUtils.fail(ResponseEnum.USER_HAS_NO_ROLE)).orElseThrow(NullPointerException::new);
+            ResponseUtils.response(response, jsonString);
+            return;
+        }
         // 就是个类型转换
         List<Role> list = authResult.getAuthorities()
                 .stream()
                 .map(e -> ((Role) e))
                 .collect(Collectors.toList());
         User user = User.builder().username(authResult.getName()).roles(list).build();
+        // TODO: MerryCodes 2020-05-23 12:03:02 Redis中查询是否存有Token，有则取出继续使用Token，无则生成新的Token
         // 构建Token，默认为一天
         String token = JwtUtils.generateToken(jwtConfig.getJwtPayloadUserKey(), jwtConfig.getPrivateKey(), user, jwtConfig.getExpiration());
         response.setHeader(jwtConfig.getTokenHeader(), jwtConfig.getTokenPrefix() + token);
@@ -83,6 +91,7 @@ public class LoginAuthenticationFilter extends UsernamePasswordAuthenticationFil
         // 生成 respond 数据
         String jsonString = JsonUtils.writeValue(ResponseUtils.success(resultMap)).orElseThrow(NullPointerException::new);
         ResponseUtils.response(response, jsonString);
+        // TODO: MerryCodes 2020-05-24 00:01:34 记录用户最后一次登录时间
     }
 
     /**

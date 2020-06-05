@@ -42,10 +42,6 @@ spring:
         exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
         enabled: true
         profile-enable: true
-# log
-logging:
-  level:
-    com.merrycodes.mapper: trace
 # mybatis-plus
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml

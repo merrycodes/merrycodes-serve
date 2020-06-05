@@ -31,6 +31,12 @@ public interface SortMapConsist {
     String UPDATE_TIME = "update";
 
     /**
+     * 前端传来的按什么字段排序
+     * lastLoginTime
+     */
+    String LAST_LOGIN_TIME = "lastLogin";
+
+    /**
      * 前端传来数据映射成 Map 的 key
      * value create/update
      */

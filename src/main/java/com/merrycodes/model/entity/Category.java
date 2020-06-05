@@ -1,9 +1,8 @@
 package com.merrycodes.model.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.merrycodes.constant.enums.StatusEnum;
 import com.merrycodes.model.entity.abstracts.AbstractBaseEntiry;
 import com.merrycodes.utils.ToStringStyleUtils;
 import io.swagger.annotations.ApiModel;
@@ -38,7 +37,7 @@ public class Category extends AbstractBaseEntiry implements Serializable {
      * 文章分类状态
      * 0 表示分类失效，1 表示分类生效
      *
-     * @see com.merrycodes.constant.enums.StatusEnum
+     * @see StatusEnum
      */
     @ApiModelProperty("文章分类状态")
     private Integer status;

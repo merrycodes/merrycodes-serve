@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -32,6 +33,7 @@ public class SettingController {
     private final SettingService settingService;
 
     @PostMapping("/save")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "保存网站设置", notes = "保存网站设置")
     @ApiImplicitParam(name = "settingMap", value = "网站设置Map", required = true, dataTypeClass = Map.class)
     @CacheEvict(cacheNames = CACHE_VALUE_SETTING, beforeInvocation = true, allEntries = true)
@@ -41,6 +43,7 @@ public class SettingController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "查询所有的网站设置", notes = "查询所有的网站设置")
     public ResponseVo<Map<String, String>> selectAllSetting() {
         Map<String, String> map = settingService.selectSettingMap();

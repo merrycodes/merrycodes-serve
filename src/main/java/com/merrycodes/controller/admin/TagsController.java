@@ -2,7 +2,7 @@ package com.merrycodes.controller.admin;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.merrycodes.model.entity.Tags;
-import com.merrycodes.model.form.TagsQueryForm;
+import com.merrycodes.model.form.query.TagsQueryForm;
 import com.merrycodes.model.vo.PaginationVo;
 import com.merrycodes.model.vo.ResponseVo;
 import com.merrycodes.model.vo.TagsVo;
@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,7 +45,8 @@ public class TagsController {
      * @param tags 文章标签实体类 {@link Tags}
      * @return 文章标签id
      */
-    @PostMapping("/save")
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "文章标签保存或更新接口", notes = "文章标签保存或更新接口")
     @ApiImplicitParam(name = "tags", value = "文章标签实体类", required = true, dataTypeClass = Tags.class)
     @Caching(evict = {
@@ -53,6 +55,7 @@ public class TagsController {
             @CacheEvict(cacheNames = CACHE_VALUE_TAG_ARTICLE, beforeInvocation = true, allEntries = true)
     })
     public ResponseVo<Integer> saveOrUpdate(Tags tags) {
+        // TODO: MerryCodes 2020-06-03 08:47:27 查修文章是否还有使用该标签的文章，如果有则提示用户不能修改此标签，如果没有则运行修改逻辑
         if (!tagsService.saveOrUpdate(tags)) {
             log.info("【saveOrUpdate 文章保存/更新 失败】");
             return ResponseUtils.fail(tags.getId() == null ? "保存失败" : "更新失败");

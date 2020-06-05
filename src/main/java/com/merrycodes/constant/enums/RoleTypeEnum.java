@@ -1,6 +1,7 @@
 package com.merrycodes.constant.enums;
 
 import lombok.Getter;
+import org.springframework.stereotype.Component;
 
 /**
  * 角色枚举类
