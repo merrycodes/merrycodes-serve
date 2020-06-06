@@ -25,4 +25,11 @@ public class LoginForm {
      */
     @ApiModelProperty("用户密码")
     private String password;
+
+    /**
+     * 记住我
+     */
+    @ApiModelProperty("记住我")
+    private Boolean rememberMe;
+
 }

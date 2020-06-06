@@ -5,6 +5,7 @@ import com.merrycodes.filter.TokenAuthenticationFilter;
 import com.merrycodes.handler.CostomAccessDeniedHandler;
 import com.merrycodes.handler.CostomAuthenticationEntryPointHandler;
 import com.merrycodes.handler.CostomLogoutSuccessHandler;
+import com.merrycodes.service.intf.RedisServce;
 import com.merrycodes.service.intf.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
 
+    private final RedisServce redisServce;
+
     private CostomLogoutSuccessHandler costomLogoutSuccessHandler;
+
 
     /**
      * 解决循环依赖
@@ -75,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
-                .addFilter(new LoginAuthenticationFilter(super.authenticationManager(), jwtConfig))
+                .addFilter(new LoginAuthenticationFilter(super.authenticationManager(), redisServce, jwtConfig, userService))
                 .addFilter(new TokenAuthenticationFilter(super.authenticationManager(), userService, jwtConfig))
                 .logout().logoutUrl(jwtConfig.getAuthLogoutUrl())
                 .logoutSuccessHandler(costomLogoutSuccessHandler)

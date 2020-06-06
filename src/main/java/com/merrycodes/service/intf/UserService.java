@@ -69,4 +69,11 @@ public interface UserService extends IService<User>, UserDetailsService {
      */
     void updateUserRole(Integer userId, List<Integer> roleIds);
 
+    /**
+     * 记录用户最后一次登录时间
+     *
+     * @param user 用户对象
+     */
+    void recordLastLoginTime(User user);
+
 }

@@ -5,6 +5,8 @@ import com.merrycodes.constant.enums.ResponseEnum;
 import com.merrycodes.model.entity.Role;
 import com.merrycodes.model.entity.User;
 import com.merrycodes.model.form.LoginForm;
+import com.merrycodes.service.intf.RedisServce;
+import com.merrycodes.service.intf.UserService;
 import com.merrycodes.utils.JsonUtils;
 import com.merrycodes.utils.JwtUtils;
 import com.merrycodes.utils.ResponseUtils;
@@ -24,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.merrycodes.constant.consist.CacheValueConsist.CACHE_VALUE_TOKEN;
+
 /**
  * 登录认证过滤器
  * 用户名密码正确，Filte将创建Token
@@ -34,13 +38,23 @@ import java.util.stream.Collectors;
 @Slf4j
 public class LoginAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
+    private final ThreadLocal<Boolean> threadLocal = new ThreadLocal<>();
+
     private final AuthenticationManager authenticationManager;
+
+    private final RedisServce redisServce;
+
+    private final UserService userService;
 
     private final JwtConfig jwtConfig;
 
-    public LoginAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig) {
+    public LoginAuthenticationFilter(AuthenticationManager authenticationManager,
+                                     RedisServce redisServce, JwtConfig jwtConfig,
+                                     UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtConfig = jwtConfig;
+        this.redisServce = redisServce;
+        this.userService = userService;
         this.setFilterProcessesUrl(jwtConfig.getAuthLoginUrl());
     }
 
@@ -51,9 +65,9 @@ public class LoginAuthenticationFilter extends UsernamePasswordAuthenticationFil
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
         try {
-            // TODO: MerryCodes 2020-05-12 09:22:10 remember-me
             // 表单获取用户名和密码
             LoginForm loginForm = JsonUtils.readValue(request.getInputStream(), LoginForm.class).orElseThrow(NullPointerException::new);
+            threadLocal.set(loginForm.getRememberMe());
             User user = new User();
             BeanUtils.copyProperties(loginForm, user);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
@@ -70,28 +84,29 @@ public class LoginAuthenticationFilter extends UsernamePasswordAuthenticationFil
     @Override
     public void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                          FilterChain chain, Authentication authResult) throws IOException {
+        // 记录用户最后一次登录的时间
+        recordLastLoginTime(authResult);
         // 判断用户是否拥有角色，没有则处理
         if (authResult.getAuthorities().size() == 0) {
             String jsonString = JsonUtils.writeValue(ResponseUtils.fail(ResponseEnum.USER_HAS_NO_ROLE)).orElseThrow(NullPointerException::new);
             ResponseUtils.response(response, jsonString);
             return;
         }
-        // 就是个类型转换
-        List<Role> list = authResult.getAuthorities()
-                .stream()
-                .map(e -> ((Role) e))
-                .collect(Collectors.toList());
-        User user = User.builder().username(authResult.getName()).roles(list).build();
-        // TODO: MerryCodes 2020-05-23 12:03:02 Redis中查询是否存有Token，有则取出继续使用Token，无则生成新的Token
-        // 构建Token，默认为一天
-        String token = JwtUtils.generateToken(jwtConfig.getJwtPayloadUserKey(), jwtConfig.getPrivateKey(), user, jwtConfig.getExpiration());
+        String token = getTokenInRedis(authResult.getName());
+        if (token == null) {
+            // 判断用户是否点击勾选了 "记住我" 是则 Token 有效期为7天，无则有效期为1天
+            Long expirationTime = threadLocal.get() ? jwtConfig.getExpirationRemember() : jwtConfig.getExpiration();
+            threadLocal.remove();
+            token = makeToken(authResult, expirationTime);
+            putTokenToRedis(authResult, token, expirationTime);
+        }
+        // 给响应头添加 Authorization 附带Token
         response.setHeader(jwtConfig.getTokenHeader(), jwtConfig.getTokenPrefix() + token);
         HashMap<String, String> resultMap = new HashMap<>(1);
         resultMap.put(jwtConfig.getTokenHeader(), jwtConfig.getTokenPrefix() + token);
         // 生成 respond 数据
         String jsonString = JsonUtils.writeValue(ResponseUtils.success(resultMap)).orElseThrow(NullPointerException::new);
         ResponseUtils.response(response, jsonString);
-        // TODO: MerryCodes 2020-05-24 00:01:34 记录用户最后一次登录时间
     }
 
     /**
@@ -102,6 +117,29 @@ public class LoginAuthenticationFilter extends UsernamePasswordAuthenticationFil
                                            AuthenticationException failed) throws IOException {
         String jsonString = JsonUtils.writeValue(ResponseUtils.fail(failed.getMessage())).orElseThrow(NullPointerException::new);
         ResponseUtils.response(response, jsonString);
+    }
+
+    private String makeToken(Authentication authResult, Long expirationTime) {
+        // 就是个类型转换
+        List<Role> list = authResult.getAuthorities().stream()
+                .map(e -> ((Role) e)).collect(Collectors.toList());
+        User user = User.builder().username(authResult.getName()).roles(list).build();
+        // 构建新的Token
+        return JwtUtils.generateToken(jwtConfig.getJwtPayloadUserKey(), jwtConfig.getPrivateKey(), user, expirationTime);
+    }
+
+    private String getTokenInRedis(String username) {
+        return (String) redisServce.getObject(CACHE_VALUE_TOKEN + username);
+    }
+
+    private void putTokenToRedis(Authentication authResult, String token, Long expirationTime) {
+        User user = (User) authResult.getPrincipal();
+        redisServce.putObject(CACHE_VALUE_TOKEN + user.getId(), token, expirationTime);
+    }
+
+    private void recordLastLoginTime(Authentication authResult) {
+        User user = (User) authResult.getPrincipal();
+        userService.recordLastLoginTime(user);
     }
 
 }

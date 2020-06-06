@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -64,5 +65,12 @@ public class UserServiceImplTest {
     public void updateUserRole() {
         userService.updateUserRole(5, Collections.emptyList());
 
+    }
+
+    @Test
+    public void recordLastLoginTime() {
+        User user = User.builder().id(6).username("miracle").password("1234")
+                .enabled(true).lastLoginTime(LocalDateTime.now()).build();
+        userService.recordLastLoginTime(user);
     }
 }

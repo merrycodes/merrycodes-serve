@@ -3,12 +3,14 @@ package com.merrycodes.controller.admin;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.google.common.collect.Lists;
 import com.merrycodes.constant.enums.ResponseEnum;
+import com.merrycodes.model.entity.Article;
 import com.merrycodes.model.entity.User;
 import com.merrycodes.model.form.ChangePasswordForm;
 import com.merrycodes.model.form.UserForm;
 import com.merrycodes.model.form.query.UserQueryForm;
 import com.merrycodes.model.vo.PaginationVo;
 import com.merrycodes.model.vo.ResponseVo;
+import com.merrycodes.service.intf.RedisServce;
 import com.merrycodes.service.intf.UserRoleService;
 import com.merrycodes.service.intf.UserService;
 import com.merrycodes.utils.CurrentUserUtils;
@@ -27,8 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 
-import static com.merrycodes.constant.consist.CacheValueConsist.CACHE_VALUE_USER;
-import static com.merrycodes.constant.consist.CacheValueConsist.CACHE_VALUE_USER_ROLE;
+import static com.merrycodes.constant.consist.CacheValueConsist.*;
 
 /**
  * 用户
@@ -45,14 +46,17 @@ public class UserController {
 
     private final UserService userService;
 
+    private final RedisServce redisServce;
+
     private final UserRoleService userRoleService;
 
     /**
+     * 获取列表列表
      *
-     * @param current
-     * @param size
-     * @param userQueryForm
-     * @return
+     * @param current       当前页数
+     * @param size          当前分页总条数
+     * @param userQueryForm 用户查询表单类
+     * @return 用户列表实体类 (分页) {@link Article}
      */
     @GetMapping
     @PreAuthorize("hasRole('USER')")
@@ -147,6 +151,8 @@ public class UserController {
         userService.removeById(id);
         // 删除用户和角色关联
         userRoleService.deleteByUserId(id);
+        // 删除Redis中的Token
+        redisServce.removeObject(CACHE_VALUE_TOKEN + id);
         return ResponseUtils.success();
     }
 

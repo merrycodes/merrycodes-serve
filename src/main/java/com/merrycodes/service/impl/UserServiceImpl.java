@@ -1,6 +1,8 @@
 package com.merrycodes.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -11,6 +13,7 @@ import com.merrycodes.model.entity.User;
 import com.merrycodes.model.form.ChangePasswordForm;
 import com.merrycodes.model.form.UserForm;
 import com.merrycodes.model.form.query.UserQueryForm;
+import com.merrycodes.service.intf.RedisServce;
 import com.merrycodes.service.intf.UserRoleService;
 import com.merrycodes.service.intf.UserService;
 import com.merrycodes.utils.CurrentUserUtils;
@@ -29,6 +32,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +51,8 @@ import static com.merrycodes.constant.consist.SortMapConsist.*;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     private final UserMapper userMapper;
+
+    private final RedisServce redisServce;
 
     private final UserRoleService userRoleService;
 
@@ -69,9 +75,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @throws UsernameNotFoundException 用户名不存在异常
      */
     @Override
-    @Cacheable(cacheNames = CACHE_VALUE_USER, key = "'username['+#username+']'")
+    @Cacheable(cacheNames = CACHE_VALUE_USER, key = "'username['+#username+']'", unless = "#result == null")
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // TODO: MerryCodes 2020-05-23 23:56:57 用户角色不为空时，保存到Redis中
         User user = userMapper.selectBynameWithRole(username);
         if (user == null) {
             throw new UsernameNotFoundException("");
@@ -181,11 +186,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return 是否更新成功
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = CACHE_VALUE_USER, beforeInvocation = true, allEntries = true)
     public Boolean updateUserEnable(UserForm userForm) {
         User user = new User();
         BeanUtils.copyProperties(userForm, user);
         user.setUpdateBy(getCurrentusername());
+        // 删除Redis中的Token
+        redisServce.removeObject(CACHE_VALUE_TOKEN + user.getId());
         return userMapper.updateById(user) > 0;
     }
 
@@ -196,6 +204,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @param roleIds 角色id集合
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @Caching(evict = {
             @CacheEvict(cacheNames = CACHE_VALUE_USER_ROLE, beforeInvocation = true, allEntries = true),
             @CacheEvict(cacheNames = CACHE_VALUE_ROLE, beforeInvocation = true, key = "'roleByUserId['+#userId+']'")
@@ -207,6 +216,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (roleIds.size() != 0) {
             userRoleService.insertBatch(userId, roleIds);
         }
+    }
+
+    /**
+     * 记录用户最后一次登录时间
+     *
+     * @param user 用户对象
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(cacheNames = CACHE_VALUE_USER, beforeInvocation = true, allEntries = true)
+    public void recordLastLoginTime(User user) {
+        user.setLastLoginTime(LocalDateTime.now());
+        user.setUpdateBy(getCurrentusername());
+        userMapper.updateById(user);
     }
 
     private void changePassword(User user, String username, String password) {
@@ -226,4 +249,5 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public String getCurrentusername() {
         return CurrentUserUtils.getCurrentUsername().orElseThrow(NullPointerException::new);
     }
+
 }

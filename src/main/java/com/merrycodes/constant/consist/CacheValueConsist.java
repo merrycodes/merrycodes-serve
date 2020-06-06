@@ -26,4 +26,6 @@ public interface CacheValueConsist {
 
     String CACHE_VALUE_USER_ROLE = "userRole";
 
+    String CACHE_VALUE_TOKEN = "Token::";
+
 }
