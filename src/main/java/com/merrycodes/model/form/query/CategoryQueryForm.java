@@ -1,7 +1,7 @@
 package com.merrycodes.model.form.query;
 
-import com.merrycodes.model.form.abstracts.AbstractSortForm;
 import com.merrycodes.constant.enums.StatusEnum;
+import com.merrycodes.model.form.abstracts.AbstractSortForm;
 import com.merrycodes.utils.ToStringStyleUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

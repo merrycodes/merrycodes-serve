@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.merrycodes.constant.consist.CacheValueConsist.CACHE_VALUE_ROLE;
-import static com.merrycodes.constant.consist.CacheValueConsist.CACHE_VALUE_USER;
 
 /**
  * 角色service决口实现类

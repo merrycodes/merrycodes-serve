@@ -1,10 +1,8 @@
 package com.merrycodes.service.intf;
 
-import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.merrycodes.model.entity.Role;
-import com.merrycodes.model.form.query.ArticleQueryForm;
 import com.merrycodes.model.form.query.RoleQueryForm;
 import com.merrycodes.model.vo.RoleVo;
 

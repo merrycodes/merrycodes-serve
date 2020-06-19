@@ -1,8 +1,6 @@
 package com.merrycodes.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -228,7 +226,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @CacheEvict(cacheNames = CACHE_VALUE_USER, beforeInvocation = true, allEntries = true)
     public void recordLastLoginTime(User user) {
         user.setLastLoginTime(LocalDateTime.now());
-        user.setUpdateBy(getCurrentusername());
+        user.setUpdateBy(user.getUsername());
         userMapper.updateById(user);
     }
 

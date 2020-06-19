@@ -1,23 +1,32 @@
 package com.merrycodes.controller.admin;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.merrycodes.config.QiniuConfig;
 import com.merrycodes.model.entity.Article;
 import com.merrycodes.model.form.query.ArticleQueryForm;
 import com.merrycodes.model.vo.PaginationVo;
 import com.merrycodes.model.vo.ResponseVo;
 import com.merrycodes.service.intf.ArticleService;
+import com.merrycodes.utils.JsonUtils;
+import com.merrycodes.utils.QiniuUtils;
 import com.merrycodes.utils.ResponseUtils;
+import com.qiniu.common.QiniuException;
+import com.qiniu.http.Response;
+import com.qiniu.storage.model.DefaultPutRet;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import static com.merrycodes.constant.consist.CacheValueConsist.*;
 
@@ -31,10 +40,20 @@ import static com.merrycodes.constant.consist.CacheValueConsist.*;
 @Slf4j
 @RestController
 @RequestMapping("/admin/article")
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ArticleController {
 
     private final ArticleService articleService;
+
+    private final QiniuConfig qiniuConfig;
+
+    private final QiniuUtils qiniuUtils;
+
+    @Autowired
+    public ArticleController(ArticleService articleService, QiniuConfig qiniuConfig) {
+        this.articleService = articleService;
+        this.qiniuConfig = qiniuConfig;
+        this.qiniuUtils = QiniuUtils.getInstance(qiniuConfig);
+    }
 
     /**
      * 保存或更新文章
@@ -97,6 +116,51 @@ public class ArticleController {
         IPage<Article> iPage = articleService.selectArticlePage(current, size, articleQueryForm);
         log.info("【list 获取文章列表】 总条数={} 当前分页总页数={} 当前页数={}", iPage.getTotal(), iPage.getSize(), iPage.getCurrent());
         return ResponseUtils.success(new PaginationVo<>(iPage));
+    }
+
+    /**
+     * 上传图片
+     *
+     * @param multipartFile {@link MultipartFile}
+     * @return 图片外链
+     */
+    @PostMapping("/upload")
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiImplicitParam(name = "multipartFile", value = "前端传来的图片", dataTypeClass = MultipartFile.class)
+    public ResponseVo<String> uploadImage(@RequestParam("image") MultipartFile multipartFile) {
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            String uploadToken = qiniuUtils.getUploadToken();
+            Response response = qiniuUtils.uploadFile(inputStream, null, uploadToken);
+            DefaultPutRet defaultPutRet = JsonUtils.readValue(response.bodyString(), DefaultPutRet.class).orElse(null);
+            log.info("【uploadImage 上传图片】key={}", defaultPutRet.key);
+            return ResponseUtils.success(qiniuConfig.getHost() + defaultPutRet.key);
+        } catch (IOException exception) {
+            log.error("【uploadImage 上传图片】msg={}", exception.getMessage());
+            return ResponseUtils.fail("上传失败，请重新尝试！");
+        }
+    }
+
+    /**
+     * 删除图片
+     *
+     * @param key 云存储中的key
+     * @return 结果消息
+     */
+    @DeleteMapping("/{key}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiImplicitParam(name = "key", value = "云存储中的key", dataTypeClass = String.class)
+    public ResponseVo<String> deleteImage(@PathVariable("key") String key) {
+        try {
+            log.info("【deleteImage 删除图片】 key={}", key);
+            qiniuUtils.delete(key);
+            // 手动刷新缓存
+            log.info("【deleteImage 刷新缓存】key={}", key);
+            qiniuUtils.refreshUrl(qiniuConfig.getHost() + key);
+            return ResponseUtils.success();
+        } catch (QiniuException qiniuException) {
+            log.error("【deleteImage 刷新缓存】msg={}", qiniuException.getMessage());
+            return ResponseUtils.fail("删除失败，请重新尝试！");
+        }
     }
 
 }

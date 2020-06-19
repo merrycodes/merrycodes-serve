@@ -3,10 +3,8 @@ package com.merrycodes.utils;
 import com.merrycodes.constant.enums.ResponseEnum;
 import com.merrycodes.model.vo.ResponseVo;
 import lombok.Cleanup;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 

@@ -73,4 +73,16 @@ public class ArticleServiceImplTest {
             archiveVo.articleList.forEach(System.out::println);
         });
     }
+
+    @Test
+    public void selectCountByTag() {
+        Integer count = articleService.selectCountByTag("banana");
+        System.out.println(count);
+    }
+
+    @Test
+    public void selectCountByCategory() {
+        Integer count = articleService.selectCountByCategory("apple");
+        System.out.println(count);
+    }
 }

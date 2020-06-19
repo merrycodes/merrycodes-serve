@@ -66,4 +66,20 @@ public interface ArticleService extends IService<Article> {
      */
     List<ArchiveVo> selectArchiveList();
 
+    /**
+     * 获取使用标签的文章数
+     *
+     * @param name 标签名
+     * @return 文章数
+     */
+    Integer selectCountByTag(String name);
+
+    /**
+     * 获取使用分类的文章数
+     *
+     * @param name 分类名
+     * @return 文章数
+     */
+    Integer selectCountByCategory(String name);
+
 }

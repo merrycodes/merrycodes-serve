@@ -1,7 +1,5 @@
 package com.merrycodes.model.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.merrycodes.model.entity.abstracts.AbstractBaseEntiry;
 import io.swagger.annotations.ApiModel;
@@ -12,7 +10,6 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Tolerate;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 网站设置（key-value形式存储）

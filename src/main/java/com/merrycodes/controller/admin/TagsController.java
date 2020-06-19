@@ -6,6 +6,7 @@ import com.merrycodes.model.form.query.TagsQueryForm;
 import com.merrycodes.model.vo.PaginationVo;
 import com.merrycodes.model.vo.ResponseVo;
 import com.merrycodes.model.vo.TagsVo;
+import com.merrycodes.service.intf.ArticleService;
 import com.merrycodes.service.intf.TagsService;
 import com.merrycodes.utils.ResponseUtils;
 import io.swagger.annotations.Api;
@@ -39,6 +40,8 @@ public class TagsController {
 
     private final TagsService tagsService;
 
+    private final ArticleService articleService;
+
     /**
      * 保存或更新文章标签接口
      *
@@ -55,7 +58,13 @@ public class TagsController {
             @CacheEvict(cacheNames = CACHE_VALUE_TAG_ARTICLE, beforeInvocation = true, allEntries = true)
     })
     public ResponseVo<Integer> saveOrUpdate(Tags tags) {
-        // TODO: MerryCodes 2020-06-03 08:47:27 查修文章是否还有使用该标签的文章，如果有则提示用户不能修改此标签，如果没有则运行修改逻辑
+        // 有id则是更新标签，文章还有使用此标签就不能更新
+        if (tags.getId() != null) {
+            if (articleService.selectCountByTag(tags.getName()) > 0) {
+                log.error("【saveOrUpdate 还有文章使用此标签:{}，修改失败】", tags.getName());
+                return ResponseUtils.fail("还有文章使用此标签，修改失败");
+            }
+        }
         if (!tagsService.saveOrUpdate(tags)) {
             log.info("【saveOrUpdate 文章保存/更新 失败】");
             return ResponseUtils.fail(tags.getId() == null ? "保存失败" : "更新失败");

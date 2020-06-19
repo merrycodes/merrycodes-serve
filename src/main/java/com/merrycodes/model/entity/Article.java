@@ -1,7 +1,5 @@
 package com.merrycodes.model.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.merrycodes.model.entity.abstracts.AbstractBaseEntiry;
 import com.merrycodes.utils.ToStringStyleUtils;

@@ -30,3 +30,9 @@ jwt:
   expiration: 1440
   #  选择 '记住我' 24 * 60 * 7 一周
   expiration-remember: 10080
+#  qiniu
+qiniu:
+  accessKey: 七牛云AK
+  secretKey: 七牛云SK
+  bucket: 七牛云空间
+  host: 七牛云外链域名

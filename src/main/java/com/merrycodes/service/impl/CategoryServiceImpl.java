@@ -22,8 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.merrycodes.constant.consist.CacheValueConsist.CACHE_VALUE_CATEGORY;
+import static com.merrycodes.constant.consist.CacheValueConsist.CACHE_VALUE_CATEGORY_ARTICLE;
 import static com.merrycodes.constant.consist.SortMapConsist.*;
-import static com.merrycodes.constant.consist.CacheValueConsist.*;
 
 /**
  * 文章分类service接口实现类

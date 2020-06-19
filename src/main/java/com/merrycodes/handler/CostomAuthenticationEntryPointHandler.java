@@ -5,9 +5,9 @@ import com.merrycodes.utils.JsonUtils;
 import com.merrycodes.utils.ResponseUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

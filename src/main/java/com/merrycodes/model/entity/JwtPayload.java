@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Tolerate;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**

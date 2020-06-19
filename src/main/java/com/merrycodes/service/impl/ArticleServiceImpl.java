@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.merrycodes.constant.consist.SortMapConsist.*;
 import static com.merrycodes.constant.consist.CacheValueConsist.CACHE_VALUE_ARTICLE;
+import static com.merrycodes.constant.consist.SortMapConsist.*;
 
 /**
  * 文章service接口实现类
@@ -185,6 +185,32 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             }
         }
         return archiveVoList;
+    }
+
+    /**
+     * 获取使用标签的文章数
+     *
+     * @param name 标签名
+     * @return 文章数
+     */
+    @Override
+    public Integer selectCountByTag(String name) {
+        LambdaQueryWrapper<Article> wrapper = Wrappers.<Article>lambdaQuery()
+                .like(Article::getTags, name);
+        return articleMapper.selectCount(wrapper);
+    }
+
+    /**
+     * 获取使用分类的文章数
+     *
+     * @param name 分类名
+     * @return 文章数
+     */
+    @Override
+    public Integer selectCountByCategory(String name) {
+        LambdaQueryWrapper<Article> wrapper = Wrappers.<Article>lambdaQuery()
+                .like(Article::getCategory, name);
+        return articleMapper.selectCount(wrapper);
     }
 
     /**

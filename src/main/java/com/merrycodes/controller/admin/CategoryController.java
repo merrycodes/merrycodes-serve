@@ -3,9 +3,10 @@ package com.merrycodes.controller.admin;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.merrycodes.model.entity.Category;
 import com.merrycodes.model.form.query.CategoryQueryForm;
+import com.merrycodes.model.vo.CategoryVo;
 import com.merrycodes.model.vo.PaginationVo;
 import com.merrycodes.model.vo.ResponseVo;
-import com.merrycodes.model.vo.CategoryVo;
+import com.merrycodes.service.intf.ArticleService;
 import com.merrycodes.service.intf.CategoryService;
 import com.merrycodes.utils.ResponseUtils;
 import io.swagger.annotations.Api;
@@ -39,6 +40,8 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
+    private final ArticleService articleService;
+
     /**
      * 保存或更新文章分类
      *
@@ -55,7 +58,13 @@ public class CategoryController {
             @CacheEvict(cacheNames = CACHE_VALUE_CATEGORY_ARTICLE, beforeInvocation = true, allEntries = true)
     })
     public ResponseVo<Integer> saveOrUpdate(Category category) {
-        // TODO: MerryCodes 2020-06-03 08:46:05 查询文章是否还有使用该分类的文章，如果有则提示用户不能修改此分类，如果没有则运行修改逻辑
+        // 有ID则是更新分类，文章还有使用此分类就不能更新
+        if (category.getId() != null) {
+            if (articleService.selectCountByCategory(category.getName()) > 0) {
+                log.error("【还有文章使用此分类:{}，修改失败】", category.getName());
+                return ResponseUtils.fail("还有文章使用此分类，修改失败");
+            }
+        }
         if (!categoryService.saveOrUpdate(category)) {
             log.info("【saveOrUpdate 文章分类 保存/更新 失败】");
         }

@@ -9,14 +9,14 @@ import com.merrycodes.model.entity.abstracts.AbstractSecurityEntiry;
 import com.merrycodes.utils.ToStringStyleUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Tolerate;
-import org.apache.catalina.util.ToStringUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;

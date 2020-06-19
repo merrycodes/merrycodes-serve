@@ -22,8 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.merrycodes.constant.consist.CacheValueConsist.CACHE_VALUE_TAG;
+import static com.merrycodes.constant.consist.CacheValueConsist.CACHE_VALUE_TAG_ARTICLE;
 import static com.merrycodes.constant.consist.SortMapConsist.*;
-import static com.merrycodes.constant.consist.CacheValueConsist.*;
 
 /**
  * 文章标签service接口实现类

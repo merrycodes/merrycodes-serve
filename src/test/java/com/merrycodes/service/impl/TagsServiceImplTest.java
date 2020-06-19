@@ -35,6 +35,13 @@ public class TagsServiceImplTest {
     }
 
     @Test
+    public void saveTagsTest() {
+        Tags tags = new Tags();
+        tags.setName("Java");
+        tagsService.save(tags);
+    }
+
+    @Test
     public void selectTagsPageWithCount() {
         TagsQueryForm tagsQueryForm = new TagsQueryForm();
         tagsQueryForm.setStatus(1);

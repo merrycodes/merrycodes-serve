@@ -8,7 +8,9 @@ import com.merrycodes.model.entity.abstracts.AbstractSecurityEntiry;
 import com.merrycodes.utils.ToStringStyleUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
