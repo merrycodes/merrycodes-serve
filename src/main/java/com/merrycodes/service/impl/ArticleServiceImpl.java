@@ -1,27 +1,25 @@
 package com.merrycodes.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
-import com.merrycodes.constant.consist.SortMapConsist;
-import com.merrycodes.constant.enums.ArticleEnum;
+import com.merrycodes.constant.SortMapConstant;
+import com.merrycodes.entity.Article;
+import com.merrycodes.enums.ArticleEnum;
 import com.merrycodes.mapper.ArticleMapper;
-import com.merrycodes.model.entity.Article;
-import com.merrycodes.model.vo.ArchiveVo;
-import com.merrycodes.service.intf.ArticleService;
+import com.merrycodes.service.ArticleService;
+import com.merrycodes.vo.ArchiveVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 文章service接口实现类
@@ -83,10 +81,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public IPage<Article> selectArticlePage(Integer current, Integer size, Article article) {
         Page<Article> page = new Page<>(current, size);
         LambdaQueryWrapper<Article> wrapper = Wrappers.<Article>lambdaQuery()
-                .select(Article.class, articleColumn -> !StringUtils.equals("html_content", articleColumn.getColumn()) &&
-                        !StringUtils.equals("md_content", articleColumn.getColumn()) &&
-                        !StringUtils.equals("summary_content", articleColumn.getColumn()) &&
-                        !StringUtils.equals("allow_comment", articleColumn.getColumn()))
                 .eq(article.getStatus() != null, Article::getStatus, article.getStatus())
                 .like(StringUtils.isNotEmpty(article.getTitle()), Article::getTitle, article.getTitle())
                 .like(StringUtils.isNotEmpty(article.getMdContent()), Article::getMdContent, article.getMdContent())
@@ -94,17 +88,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 .like(StringUtils.isNotEmpty(article.getCategory()), Article::getCategory, article.getCategory());
         // 前端传来的排序数据 example sortMap = {name=update, sort=desc})
         Map<String, String> sortMap = article.getSort();
-        if (sortMap != null) {
-            // 判断是否等于 name 是否等于 update 如果是则 order by updateTime 否者 order by createTime
-            if (StringUtils.equals(SortMapConsist.UPDATE_TIME, sortMap.get(SortMapConsist.NAME_KEY))) {
-                // 判断前端传来按 顺序/倒叙 排序
-                wrapper.orderByAsc(StringUtils.equals(SortMapConsist.ASC, sortMap.get(SortMapConsist.SORT_KEY)), Article::getUpdateTime)
-                        .orderByDesc(StringUtils.equals(SortMapConsist.DESC, sortMap.get(SortMapConsist.SORT_KEY)), Article::getUpdateTime);
-            } else {
-                // 同上
-                wrapper.orderByAsc(StringUtils.equals(SortMapConsist.ASC, sortMap.get(SortMapConsist.SORT_KEY)), Article::getCreateTime)
-                        .orderByDesc(StringUtils.equals(SortMapConsist.DESC, sortMap.get(SortMapConsist.SORT_KEY)), Article::getCreateTime);
-            }
+        // 判断是否等于 name 是否等于 update 如果是则 order by updateTime 否者 order by createTime
+        if (StringUtils.equals(SortMapConstant.UPDATE_TIME, sortMap.get(SortMapConstant.NAME_KEY))) {
+            // 判断前端传来按 顺序/倒叙 排序
+            wrapper.orderByAsc(StringUtils.equals(SortMapConstant.ASC, sortMap.get(SortMapConstant.SORT_KEY)), Article::getUpdateTime)
+                    .orderByDesc(StringUtils.equals(SortMapConstant.DESC, sortMap.get(SortMapConstant.SORT_KEY)), Article::getUpdateTime);
+        } else {
+            // 同上
+            wrapper.orderByAsc(StringUtils.equals(SortMapConstant.ASC, sortMap.get(SortMapConstant.SORT_KEY)), Article::getCreateTime)
+                    .orderByDesc(StringUtils.equals(SortMapConstant.DESC, sortMap.get(SortMapConstant.SORT_KEY)), Article::getCreateTime);
         }
         return articleMapper.selectPage(page, wrapper);
     }

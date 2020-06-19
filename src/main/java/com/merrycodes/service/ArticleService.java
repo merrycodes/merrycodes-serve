@@ -1,9 +1,9 @@
-package com.merrycodes.service.intf;
+package com.merrycodes.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.merrycodes.model.entity.Article;
-import com.merrycodes.model.vo.ArchiveVo;
+import com.merrycodes.entity.Article;
+import com.merrycodes.vo.ArchiveVo;
 
 import java.util.List;
 

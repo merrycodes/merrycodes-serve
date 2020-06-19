@@ -1,11 +1,11 @@
 package com.merrycodes.controller.admin;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.merrycodes.model.entity.Category;
-import com.merrycodes.model.vo.PaginationVo;
-import com.merrycodes.model.vo.ResponseVo;
-import com.merrycodes.service.intf.CategoryService;
-import com.merrycodes.utils.ResponseUtils;
+import com.merrycodes.entity.Category;
+import com.merrycodes.service.CategoryService;
+import com.merrycodes.util.ResponseUtil;
+import com.merrycodes.vo.PaginationVo;
+import com.merrycodes.vo.ResponseVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -47,7 +47,7 @@ public class CategoryController {
             log.info("【saveOrUpdate 文章分类 保存/更新 失败】");
         }
         log.info("【saveOrUpdate 文章分类 保存/更新 成功】 id={}", category.getId());
-        return ResponseUtils.success(category.getId());
+        return ResponseUtil.success(category.getId());
     }
 
     /**
@@ -70,7 +70,7 @@ public class CategoryController {
                                                                  Category category) {
         IPage<Category> iPage = categoryService.selectCategoryPageWithCount(current, size, category);
         log.info("【selectCategoryPageWithCount 获取文章分类】 总条数={} 当前分页总页数={} 当前页数={}", iPage.getTotal(), iPage.getSize(), iPage.getCurrent());
-        return ResponseUtils.success(new PaginationVo<>(iPage));
+        return ResponseUtil.success(new PaginationVo<>(iPage));
     }
 
     @ApiOperation(value = "获取文章分类名字的全部集合（用于文章列表查询的选线）", notes = "获取文章分类名字的全部集合（用于文章列表查询的选线）")
@@ -78,15 +78,15 @@ public class CategoryController {
     public ResponseVo<List<String>> categoryNameList() {
         List<String> list = categoryService.selectCategoryNameList();
         log.info("【categoryNameList 获取文章分类名 list={}】", list);
-        return ResponseUtils.success(list);
+        return ResponseUtil.success(list);
     }
 
     @ApiOperation(value = "获取生效的文章分类名字的集合（用于新建文章的选项）", notes = "获取生效的文章分类名字的集合（用于新建文章的选项）")
     @GetMapping("/stausList")
     public ResponseVo<List<String>> categoryNameListByStaus() {
-        List<String> list = categoryService.selectCategoryNameListByStatus();
+        List<String> list =  categoryService.selectCategoryNameListByStatus();
         log.info("【categoryNameListByStaus 获取文章分类名（by status） list={}】", list);
-        return ResponseUtils.success(list);
+        return ResponseUtil.success(list);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.merrycodes.model.vo;
+package com.merrycodes.vo;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.ApiModel;

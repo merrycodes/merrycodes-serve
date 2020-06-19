@@ -1,11 +1,11 @@
 package com.merrycodes.controller.admin;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.merrycodes.model.entity.Tags;
-import com.merrycodes.model.vo.PaginationVo;
-import com.merrycodes.model.vo.ResponseVo;
-import com.merrycodes.service.intf.TagsService;
-import com.merrycodes.utils.ResponseUtils;
+import com.merrycodes.entity.Tags;
+import com.merrycodes.service.TagsService;
+import com.merrycodes.util.ResponseUtil;
+import com.merrycodes.vo.PaginationVo;
+import com.merrycodes.vo.ResponseVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -44,10 +44,10 @@ public class TagsController {
     public ResponseVo<Integer> saveOrUpdate(Tags tags) {
         if (!tagsService.saveOrUpdate(tags)) {
             log.info("【saveOrUpdate 文章保存/更新 失败】");
-            return ResponseUtils.fail(tags.getId() == null ? "保存失败" : "更新失败");
+            return ResponseUtil.fail(tags.getId() == null ? "保存失败" : "更新失败");
         }
         log.info("【saveOrUpdate 文章保存/更新 成功】 id={}", tags.getId());
-        return ResponseUtils.success(tags.getId());
+        return ResponseUtil.success(tags.getId());
     }
 
     /**
@@ -70,7 +70,7 @@ public class TagsController {
                                                          Tags tags) {
         IPage<Tags> iPage = tagsService.selectTagsPageWithCount(current, size, tags);
         log.info("【selectTagsPage 获取文章列表】 总条数={} 当前分页总页数={} 当前页数={}", iPage.getTotal(), iPage.getSize(), iPage.getCurrent());
-        return ResponseUtils.success(new PaginationVo<>(iPage));
+        return ResponseUtil.success(new PaginationVo<>(iPage));
     }
 
     @ApiOperation(value = "获取文章标签名字的全部集合（用于文章列表查询的选线）", notes = "获取文章标签名字的全部集合（用于文章列表查询的选线）")
@@ -78,7 +78,7 @@ public class TagsController {
     public ResponseVo<List<String>> tagsNameList() {
         List<String> list = tagsService.selectTagsNameList();
         log.info("【tagsNameList 获取文章标签名 list={}】", list);
-        return ResponseUtils.success(list);
+        return ResponseUtil.success(list);
     }
 
     @ApiOperation(value = "获取生效的文章标签名字的集合（用于新建文章的选项）", notes = "获取生效的文章标签名字的集合（用于新建文章的选项）")
@@ -86,6 +86,6 @@ public class TagsController {
     public ResponseVo<List<String>> tagsNameListByStaus() {
         List<String> list = tagsService.selectTagsNameListByStatus();
         log.info("【tagsNameListByStaus 获取文章标签名（by status） list={}】", list);
-        return ResponseUtils.success(list);
+        return ResponseUtil.success(list);
     }
 }

@@ -1,10 +1,10 @@
 package com.merrycodes.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.merrycodes.model.entity.Article;
-import com.merrycodes.service.intf.ArticleService;
-import com.merrycodes.model.vo.ArchiveVo;
-import com.merrycodes.model.vo.PaginationVo;
+import com.merrycodes.entity.Article;
+import com.merrycodes.service.ArticleService;
+import com.merrycodes.vo.ArchiveVo;
+import com.merrycodes.vo.PaginationVo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

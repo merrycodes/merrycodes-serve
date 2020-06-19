@@ -1,4 +1,4 @@
-package com.merrycodes.constant.enums;
+package com.merrycodes.enums;
 
 /**
  * 枚举接口

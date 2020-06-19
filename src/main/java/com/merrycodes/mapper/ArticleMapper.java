@@ -1,7 +1,7 @@
 package com.merrycodes.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.merrycodes.model.entity.Article;
+import com.merrycodes.entity.Article;
 import org.springframework.stereotype.Repository;
 
 /**

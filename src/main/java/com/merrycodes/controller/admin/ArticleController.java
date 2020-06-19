@@ -1,11 +1,11 @@
 package com.merrycodes.controller.admin;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.merrycodes.model.entity.Article;
-import com.merrycodes.model.vo.PaginationVo;
-import com.merrycodes.model.vo.ResponseVo;
-import com.merrycodes.service.intf.ArticleService;
-import com.merrycodes.utils.ResponseUtils;
+import com.merrycodes.entity.Article;
+import com.merrycodes.service.ArticleService;
+import com.merrycodes.util.ResponseUtil;
+import com.merrycodes.vo.PaginationVo;
+import com.merrycodes.vo.ResponseVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -43,10 +43,10 @@ public class ArticleController {
     public ResponseVo<Integer> save(Article article) {
         if (!articleService.saveOrUpdate(article)) {
             log.info("【save 文章保存/更新失败】");
-            return ResponseUtils.fail(article.getId() == null ? "保存失败" : "更新失败");
+            return ResponseUtil.fail(article.getId() == null ? "保存失败" : "更新失败");
         }
         log.info("【save 文章保存/更新 成功】 id={}", article.getId());
-        return ResponseUtils.success(article.getId());
+        return ResponseUtil.success(article.getId());
     }
 
     /**
@@ -61,7 +61,7 @@ public class ArticleController {
     public ResponseVo<Article> info(@PathVariable("id") Integer id) {
         Article article = articleService.selectEditArticleInfo(id);
         log.info("info 获取文章详情 Article={}", article);
-        return ResponseUtils.success(article);
+        return ResponseUtil.success(article);
     }
 
     /**
@@ -85,7 +85,7 @@ public class ArticleController {
                                                   Article article) {
         IPage<Article> iPage = articleService.selectArticlePage(current, size, article);
         log.info("【list 获取文章列表】 总条数={} 当前分页总页数={} 当前页数={}", iPage.getTotal(), iPage.getSize(), iPage.getCurrent());
-        return ResponseUtils.success(new PaginationVo<>(iPage));
+        return ResponseUtil.success(new PaginationVo<>(iPage));
     }
 
 }

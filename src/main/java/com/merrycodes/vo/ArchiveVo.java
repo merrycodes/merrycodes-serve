@@ -1,6 +1,6 @@
-package com.merrycodes.model.vo;
+package com.merrycodes.vo;
 
-import com.merrycodes.model.entity.Article;
+import com.merrycodes.entity.Article;
 import lombok.Data;
 
 import java.util.List;
