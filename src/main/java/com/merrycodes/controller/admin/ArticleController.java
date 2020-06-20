@@ -131,6 +131,7 @@ public class ArticleController {
         try (InputStream inputStream = multipartFile.getInputStream()) {
             String uploadToken = qiniuUtils.getUploadToken();
             Response response = qiniuUtils.uploadFile(inputStream, null, uploadToken);
+            response.close();
             DefaultPutRet defaultPutRet = JsonUtils.readValue(response.bodyString(), DefaultPutRet.class).orElse(null);
             log.info("【uploadImage 上传图片】key={}", defaultPutRet.key);
             return ResponseUtils.success(qiniuConfig.getHost() + defaultPutRet.key);
