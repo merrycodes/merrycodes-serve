@@ -2,10 +2,14 @@ spring:
   #    MySQL
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/merrycodes?serverTimezone=Asia/Shanghai&useUnicode=true&useSSL=false&characterEncoding=utf8
-    username: root
-    password: 123456
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/merrycodes?serverTimezone=Asia/Shanghai&useUnicode=true&useSSL=false&characterEncoding=utf8
+      username: root
+      password: kBHQ1l6k9v8MLXVltNsyWDkCpVk52Bmdm9/sqrvUZANKafzc/+G2OW/K8FgIox5kok4j5EZUamol4MIieH8PQg==
+      connect-properties:
+        config.decrypt: true
+        config.decrypt.key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMxRXKtUaqMbLFPcwtU93sAPIc+ukpGj6jDv0mvSfbKrVR2pKze3fzhUe65nlJyJzmyBfwISLRz6KN0teZdo72MCAwEAAQ==
   #    Redis（连接池使用默认配置）
   redis:
     #    Redis数据库索引

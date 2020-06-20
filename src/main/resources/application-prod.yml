@@ -2,7 +2,41 @@ spring:
   #    MySQL
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url:
-    username:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url:
+      username:
+      password:
+      connect-properties:
+        config.decrypt:
+        config.decrypt.key:
+  #    Redis（连接池使用默认配置）
+  redis:
+    #    Redis数据库索引
+    database:
+    host:
+    port:
     password:
+    timeout:
+# log
+logging:
+  level:
+    com.merrycodes.mapper: trace
+  file: 自定义存储日志路径
+#  Jwt
+jwt:
+  auth-login-url: 自定义登录路径
+  auth-logout-url: 自定义登录路径
+  public-key-path: 自定义公钥路径
+  private-key-path: 自定义私钥路径
+  jwt-payload-user-key: user
+  #  没有选择 '记住我' 24 * 60 一天
+  expiration: 1440
+  #  选择 '记住我' 24 * 60 * 7 一周
+  expiration-remember: 10080
+#  qiniu
+qiniu:
+  accessKey: 七牛云AK
+  secretKey: 七牛云SK
+  bucket: 七牛云空间
+  host: 七牛云外链域名

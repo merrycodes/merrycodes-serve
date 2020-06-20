@@ -42,6 +42,9 @@ spring:
         exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
         enabled: true
         profile-enable: true
+      filter:
+        config:
+          enabled: true
 # mybatis-plus
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
