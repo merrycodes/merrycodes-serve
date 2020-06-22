@@ -163,17 +163,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer saveUser(UserForm userForm) {
-        // 设置加密后的密码
-        userForm.setPassword(bCryptPasswordEncoder.encode(userForm.getPassword()));
-        // 构建新的User对象
-        User user = new User();
-        // 复制对象
-        BeanUtils.copyProperties(userForm, user);
-        // 获取当前用户名
+        // 组装新的 User 对象
+        User user = User.builder().username(userForm.getUsername())
+                .password(bCryptPasswordEncoder.encode(userForm.getPassword())).enabled(true).build();
+        user.setEnabled(true);
         String currentusername = getCurrentusername();
         user.setCreateBy(currentusername);
         user.setUpdateBy(currentusername);
-        user.setEnabled(true);
         return userMapper.insert(user);
     }
 
@@ -187,8 +183,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = CACHE_VALUE_USER, beforeInvocation = true, allEntries = true)
     public Boolean updateUserEnable(UserForm userForm) {
-        User user = new User();
-        BeanUtils.copyProperties(userForm, user);
+        User user = User.builder().id(userForm.getId()).enabled(userForm.getEnabled()).build();
         user.setUpdateBy(getCurrentusername());
         // 删除Redis中的Token
         redisServce.removeObject(CACHE_VALUE_TOKEN + user.getId());

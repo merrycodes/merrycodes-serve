@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -19,7 +20,9 @@ import java.util.List;
 @Data
 @ApiModel(description = "角色对象模型")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RoleVo {
+public class RoleVo implements Serializable {
+
+    private static final long serialVersionUID = 3691164423526213863L;
 
     /**
      * 角色id

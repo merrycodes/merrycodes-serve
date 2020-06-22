@@ -12,4 +12,12 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserRoleMapper extends BaseMapper<UserRole> {
+
+    /**
+     * 查看用户角色中 ADMIN 角色的数量
+     *
+     * @return ADMIN 角色数量
+     */
+    Integer selectAdminCount();
+
 }

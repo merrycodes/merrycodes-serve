@@ -49,7 +49,7 @@ public class InitApplicationServiceImpl implements InitApplicationService {
         // 存在用户则不自动添加用户
         if (userService.count() == 0) {
             log.info(">>>>>>>>>>>>>>>>>>初始化用户表开始<<<<<<<<<<<<<<<<<<");
-            User user = User.builder().enabled(true).username("system").password(bCryptPasswordEncoder.encode("123456")).build();
+            User user = User.builder().enabled(true).username("ROOT").password(bCryptPasswordEncoder.encode("123456")).build();
             userService.save(user);
             log.info(">>>>>>>>>>>>>>>>>>初始化用户表结束<<<<<<<<<<<<<<<<<<");
 

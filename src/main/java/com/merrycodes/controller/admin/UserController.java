@@ -3,7 +3,9 @@ package com.merrycodes.controller.admin;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.google.common.collect.Lists;
 import com.merrycodes.constant.enums.ResponseEnum;
+import com.merrycodes.constant.enums.RoleTypeEnum;
 import com.merrycodes.model.entity.Article;
+import com.merrycodes.model.entity.Role;
 import com.merrycodes.model.entity.User;
 import com.merrycodes.model.form.ChangePasswordForm;
 import com.merrycodes.model.form.UserForm;
@@ -11,6 +13,7 @@ import com.merrycodes.model.form.query.UserQueryForm;
 import com.merrycodes.model.vo.PaginationVo;
 import com.merrycodes.model.vo.ResponseVo;
 import com.merrycodes.service.intf.RedisServce;
+import com.merrycodes.service.intf.RoleService;
 import com.merrycodes.service.intf.UserRoleService;
 import com.merrycodes.service.intf.UserService;
 import com.merrycodes.utils.CurrentUserUtils;
@@ -27,6 +30,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static com.merrycodes.constant.consist.CacheValueConsist.*;
@@ -46,6 +50,8 @@ public class UserController {
 
     private final UserService userService;
 
+    private final RoleService roleService;
+
     private final RedisServce redisServce;
 
     private final UserRoleService userRoleService;
@@ -59,7 +65,7 @@ public class UserController {
      * @return 用户列表实体类 (分页) {@link Article}
      */
     @GetMapping
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @ApiOperation(value = "获取用户列表接口", notes = "获取用户列表接口")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页数", dataTypeClass = Integer.class),
@@ -80,7 +86,7 @@ public class UserController {
      * @return 用户角色数组
      */
     @GetMapping("/role")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @ApiOperation(value = "查询当前登录用户的角色", notes = "查询当前登录用户的角色")
     public ResponseVo<String[]> getUserRole() {
         log.info("【getUserRole 获取用户角色】");
@@ -95,7 +101,7 @@ public class UserController {
      * @return 提示信息
      */
     @PutMapping("/change-pwd")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "用户修改密码接口", notes = "用户修改密码接口")
     @ApiImplicitParam(name = "changePasswordForm", value = "修改密码表单类", dataTypeClass = ChangePasswordForm.class)
     public ResponseVo<String> changePassword(ChangePasswordForm changePasswordForm) {
@@ -156,18 +162,35 @@ public class UserController {
         return ResponseUtils.success();
     }
 
+    /**
+     * 生效/失效用户
+     *
+     * @param userForm {@link UserForm}
+     * @return {@link ResponseEnum#getCode()}
+     */
     @PutMapping("/enable")
     @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "用户生效/失效接口", notes = "用户生效/失效接口")
     @ApiImplicitParam(name = "userForm", value = "用户表单类", dataTypeClass = UserForm.class)
     public ResponseVo<Integer> updateUserEnable(UserForm userForm) {
-        log.info("【updateUserEnable 用户生效/失效】 用户id='{}'----{}", userForm.getUsername(), userForm.getEnabled() ? "生效" : "失效");
+        log.info("【updateUserEnable 用户生效/失效】 用户id='{}'----{}", userForm.getId(), userForm.getEnabled() ? "生效" : "失效");
+        if (userRoleService.checkAdminRole(userForm.getId())) {
+            log.error("【updateUserEnable 用户生效/失效】msg={}", ResponseEnum.ADMIN_ROLE_NO_CHANGE.getMessage());
+            return ResponseUtils.fail(ResponseEnum.ADMIN_ROLE_NO_CHANGE);
+        }
         if (userService.updateUserEnable(userForm)) {
             return ResponseUtils.success();
         }
         return ResponseUtils.fail("用户状态更新失败");
     }
 
+    /**
+     * 更新用户角色
+     *
+     * @param userId  用户Id
+     * @param roleIds 角色Id
+     * @return {@link ResponseEnum#getMessage()}
+     */
     @PutMapping("/role")
     @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "更新用户角色接口", notes = "更新用户角色接口")
@@ -175,14 +198,27 @@ public class UserController {
             @ApiImplicitParam(name = "userId", value = "用户id", dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "roleIds", value = "角色的id数组", dataTypeClass = Integer.class)
     })
-    public ResponseVo<Integer> updateUserRole(@RequestParam("userId") Integer userId,
-                                              @RequestParam(value = "roleData", required = false) Integer[] roleIds) {
+    public ResponseVo<String> updateUserRole(@RequestParam("userId") Integer userId,
+                                             @RequestParam(value = "roleData", required = false) Integer[] roleIds) {
+        Boolean checkAdminRole = userRoleService.checkAdminRole(userId);
         if (roleIds == null) {
+            if (checkAdminRole) {
+                log.error("【updateUserRole 更新用户角色】msg={}", ResponseEnum.ADMIN_ROLE_NO_CHANGE.getMessage());
+                return ResponseUtils.fail(ResponseEnum.ADMIN_ROLE_NO_CHANGE);
+            }
             userService.updateUserRole(userId, Collections.emptyList());
         } else {
+            Role role = roleService.selectByName(RoleTypeEnum.ADMIN.getName());
+            int index = Arrays.binarySearch(roleIds, role.getId());
+            if (index < 0 && checkAdminRole) {
+                log.error("【updateUserRole 更新用户角色】msg={}", ResponseEnum.ADMIN_ROLE_NO_CHANGE.getMessage());
+                return ResponseUtils.fail(ResponseEnum.ADMIN_ROLE_NO_CHANGE);
+            }
             userService.updateUserRole(userId, Lists.newArrayList(roleIds));
         }
         log.info("【updateUserRole 更新用户角色】 用户id={}, 角色id={}", userId, roleIds);
+        // 删除Redis中的Token
+        redisServce.removeObject(CACHE_VALUE_TOKEN + userId);
         return ResponseUtils.success("用户分配角色成功");
     }
 

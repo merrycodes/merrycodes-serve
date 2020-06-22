@@ -92,13 +92,14 @@ public class LoginAuthenticationFilter extends UsernamePasswordAuthenticationFil
             ResponseUtils.response(response, jsonString);
             return;
         }
-        String token = getTokenInRedis(authResult.getName());
+        User user = (User) authResult.getPrincipal();
+        String token = getTokenInRedis(user.getId());
         if (token == null) {
             // 判断用户是否点击勾选了 "记住我" 是则 Token 有效期为7天，无则有效期为1天
             Long expirationTime = threadLocal.get() ? jwtConfig.getExpirationRemember() : jwtConfig.getExpiration();
             threadLocal.remove();
             token = makeToken(authResult, expirationTime);
-            putTokenToRedis(authResult, token, expirationTime);
+            putTokenToRedis(user, token, expirationTime);
         }
         // 给响应头添加 Authorization 附带Token
         response.setHeader(jwtConfig.getTokenHeader(), jwtConfig.getTokenPrefix() + token);
@@ -128,12 +129,11 @@ public class LoginAuthenticationFilter extends UsernamePasswordAuthenticationFil
         return JwtUtils.generateToken(jwtConfig.getJwtPayloadUserKey(), jwtConfig.getPrivateKey(), user, expirationTime);
     }
 
-    private String getTokenInRedis(String username) {
+    private String getTokenInRedis(Integer username) {
         return (String) redisServce.getObject(CACHE_VALUE_TOKEN + username);
     }
 
-    private void putTokenToRedis(Authentication authResult, String token, Long expirationTime) {
-        User user = (User) authResult.getPrincipal();
+    private void putTokenToRedis(User user, String token, Long expirationTime) {
         redisServce.putObject(CACHE_VALUE_TOKEN + user.getId(), token, expirationTime);
     }
 

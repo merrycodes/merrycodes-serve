@@ -46,4 +46,12 @@ public interface UserRoleService extends IService<UserRole> {
      */
     void insertBatch(Integer userId, List<Integer> roleIds);
 
+    /**
+     * 查看用户是否有 ADMIN权限
+     *
+     * @param userId 用户id
+     * @return {@link Boolean}
+     */
+    Boolean checkAdminRole(Integer userId);
+
 }

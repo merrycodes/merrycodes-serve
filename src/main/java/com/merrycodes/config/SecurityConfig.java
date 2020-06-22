@@ -2,7 +2,6 @@ package com.merrycodes.config;
 
 import com.merrycodes.filter.LoginAuthenticationFilter;
 import com.merrycodes.filter.TokenAuthenticationFilter;
-import com.merrycodes.handler.CostomAccessDeniedHandler;
 import com.merrycodes.handler.CostomAuthenticationEntryPointHandler;
 import com.merrycodes.handler.CostomLogoutSuccessHandler;
 import com.merrycodes.service.intf.RedisServce;
@@ -86,6 +85,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .exceptionHandling().accessDeniedHandler(new CostomAccessDeniedHandler()).authenticationEntryPoint(new CostomAuthenticationEntryPointHandler());
+                .exceptionHandling().authenticationEntryPoint(new CostomAuthenticationEntryPointHandler());
     }
 }

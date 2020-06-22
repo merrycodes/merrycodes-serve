@@ -42,7 +42,7 @@ public class RoleController {
      * @return 角色列表实体类 (分页) {@link RoleVo}
      */
     @GetMapping
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @ApiOperation(value = "获取角色列表接口", notes = "获取角色列表接口")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页数", dataTypeClass = Integer.class),
@@ -64,7 +64,7 @@ public class RoleController {
      * @return 角色集合
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @ApiOperation(value = "获取用户的角色列表接口", notes = "获取用户的角色列表接口")
     @ApiImplicitParam(name = "id", value = "用户id", dataTypeClass = Integer.class)
     public ResponseVo<List<Role>> selectRoleByUserId(@PathVariable("id") Integer id) {
@@ -79,7 +79,7 @@ public class RoleController {
      * @return 角色集合
      */
     @GetMapping("/list")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @ApiOperation(value = "获取所有角色列表接口", notes = "获取所有角色列表接口")
     public ResponseVo<List<Role>> selectAll() {
         List<Role> roles = roleService.selectRoleWithNameDescription();

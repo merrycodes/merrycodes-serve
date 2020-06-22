@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +37,13 @@ public class RoleServieImpl extends ServiceImpl<RoleMapper, Role> implements Rol
 
     private final RoleMapper roleMapper;
 
-    private final UserRoleService userRoleService;
+    private UserRoleService userRoleService;
+
+    @Lazy
+    @Autowired
+    public void setUserRoleService(UserRoleService userRoleService) {
+        this.userRoleService = userRoleService;
+    }
 
     /**
      * 角色分页查询 (分页)
@@ -104,7 +111,7 @@ public class RoleServieImpl extends ServiceImpl<RoleMapper, Role> implements Rol
         // inSql(Role::getId, String.format("SELECT role_id FROM user_role WHERE user_id = %d", id));
         // 但是想着不想出现sql所以 UserRoleService 写了一个获取id的方法，或者使用xml
         LambdaQueryWrapper<Role> wrapper = Wrappers.<Role>lambdaQuery()
-                .select(Role::getId).in(roleIds.size() > 0, Role::getId, roleIds);
+                .select(Role::getId, Role::getName).in(roleIds.size() > 0, Role::getId, roleIds);
         return roleMapper.selectList(wrapper);
     }
 

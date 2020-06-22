@@ -4,13 +4,13 @@ import com.merrycodes.constant.enums.ResponseEnum;
 import com.merrycodes.exception.TokenException;
 import com.merrycodes.model.entity.JwtPayload;
 import com.merrycodes.model.entity.User;
-import com.sun.xml.internal.messaging.saaj.util.Base64;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.UUID;
 
 /**
@@ -49,7 +49,7 @@ public class JwtUtils {
      * @return id字符串
      */
     private static String generateJwtId() {
-        return new String(Base64.encode(UUID.randomUUID().toString().getBytes()));
+        return new String(Base64.getEncoder().encode(UUID.randomUUID().toString().getBytes()));
     }
 
     /**
