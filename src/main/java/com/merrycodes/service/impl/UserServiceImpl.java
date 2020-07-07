@@ -200,7 +200,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Transactional(rollbackFor = Exception.class)
     @Caching(evict = {
             @CacheEvict(cacheNames = CACHE_VALUE_USER_ROLE, beforeInvocation = true, allEntries = true),
-            @CacheEvict(cacheNames = CACHE_VALUE_ROLE, beforeInvocation = true, key = "'roleByUserId['+#userId+']'")
+            @CacheEvict(cacheNames = CACHE_VALUE_ROLE, beforeInvocation = true, allEntries = true)
     })
     public void updateUserRole(Integer userId, List<Integer> roleIds) {
         // 先删除对应用户的用户角色表中的数据

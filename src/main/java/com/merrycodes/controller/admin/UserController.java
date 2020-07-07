@@ -150,7 +150,11 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "删除用户接口", notes = "删除用户接口")
     @ApiImplicitParam(name = "id", value = "用户id", dataTypeClass = Integer.class)
-    @CacheEvict(cacheNames = CACHE_VALUE_USER, beforeInvocation = true, allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(cacheNames = CACHE_VALUE_USER, beforeInvocation = true, allEntries = true),
+            @CacheEvict(cacheNames = CACHE_VALUE_USER_ROLE, beforeInvocation = true, allEntries = true),
+            @CacheEvict(cacheNames = CACHE_VALUE_ROLE, beforeInvocation = true, allEntries = true)
+    })
     public ResponseVo<Integer> delect(@PathVariable("id") Integer id) {
         log.info("【delect 删除用户】id={}", id);
         // 删除用户

@@ -43,6 +43,9 @@ public enum ResponseEnum implements CodeEnum {
     NO_LOGIN_IN(50016, "请登录"),
 
 
+    /**
+     * 50018 表示 Admin 不做修改
+     */
     ADMIN_ROLE_NO_CHANGE(50018, "'ADMIN'角色的用户不能修改"),
     ;
 
