@@ -35,9 +35,9 @@ public class SwaggerConfig {
                 .title("MerryCode")
                 .description("MerryCodes API 接口文档")
                 .termsOfServiceUrl("")
-                .license("Apache 2.0")
-                .licenseUrl("https://www.apache.org/licenses/LICENSE-2.0")
-                .contact(new Contact("MerryCodes", "http://www.baidu.com", "merrycodes@163.com"))
+                .license("MIT License")
+                .licenseUrl("https://github.com/merrycodes/merrycodes-serve/blob/master/LICENSE")
+                .contact(new Contact("MerryCodes", "https://merrycodes.top/", "merrycodes@163.com"))
                 .build();
     }
 

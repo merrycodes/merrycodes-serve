@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -155,15 +156,19 @@ public class UserController {
             @CacheEvict(cacheNames = CACHE_VALUE_USER_ROLE, beforeInvocation = true, allEntries = true),
             @CacheEvict(cacheNames = CACHE_VALUE_ROLE, beforeInvocation = true, allEntries = true)
     })
-    public ResponseVo<Integer> delect(@PathVariable("id") Integer id) {
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseVo<Boolean> delect(@PathVariable("id") Integer id) {
         log.info("【delect 删除用户】id={}", id);
+        String username = userService.getById(id).getUsername();
         // 删除用户
         userService.removeById(id);
         // 删除用户和角色关联
         userRoleService.deleteByUserId(id);
         // 删除Redis中的Token
         redisServce.removeObject(CACHE_VALUE_TOKEN + id);
-        return ResponseUtils.success();
+        // 前端判断删除的是当前用户，前端需要刷新
+        String currentUsername = CurrentUserUtils.getCurrentUsername().orElse(null);
+        return ResponseUtils.success(username.equals(currentUsername));
     }
 
     /**
