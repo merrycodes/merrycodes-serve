@@ -6,25 +6,25 @@
 
 <p align="center">
     <a href="https://docs.oracle.com/javase/8/docs/#NewFeature">
-        <img src="https://img.shields.io/badge/Java-8-lightgrey?style=plastic&logo=java" alt="Java"/>
+        <img src="https://img.shields.io/badge/Java-8-007396?style=plastic&logo=java" alt="Java"/>
     </a>
     <a href="https://spring.io/projects/spring-boot">
-         <img src="https://img.shields.io/badge/SpringBoot-2.1.7.RELEASE-orange?style=plastic&logo=spring" alt="SpringBoot"/>
+         <img src="https://img.shields.io/badge/SpringBoot-2.1.7.RELEASE-6DB33F?style=plastic&logo=spring" alt="SpringBoot"/>
     </a>
      <a href="https://spring.io/projects/spring-security">
-         <img src="https://img.shields.io/badge/SpringSecurity-2.1.7.RELEASE-orange?style=plastic&logo=spring" alt="SpringSecurity"/>
+         <img src="https://img.shields.io/badge/SpringSecurity-2.1.7.RELEASE-6DB33F?style=plastic&logo=spring" alt="SpringSecurity"/>
     </a>
     <a href="http://springfox.github.io/springfox">
-         <img src="https://img.shields.io/badge/Swagger UI-2.9.2-blue?style=plastic&logo=swagger" alt="Swagger UI"/>
+         <img src="https://img.shields.io/badge/Swagger UI-2.9.2-85EA2D?style=plastic&logo=swagger" alt="Swagger UI"/>
     </a>
     <a href="https://github.com/alibaba/druid">
-         <img src="https://img.shields.io/badge/Druid-1.1.21-green?style=plastic&logo=apache%20druid" alt="Druid"/>
+         <img src="https://img.shields.io/badge/Druid-1.1.21-29F1FB?style=plastic&logo=apache%20druid" alt="Druid"/>
     </a>
     <a href="https://mp.baomidou.com">
          <img src="https://img.shields.io/badge/MyBatis Plus-3.2.0-yellow?style=plastic" alt="MyBatis Plus"/>
     </a>
     <a href="https://jwt.io">
-        <img src="https://img.shields.io/badge/JWT-0.11.1-9cf?style=plastic&logo=json%20web%20tokens" alt="Json Web Tokens"/>
+        <img src="https://img.shields.io/badge/JWT-0.11.1-000000?style=plastic&logo=json%20web%20tokens" alt="Json Web Tokens"/>
     </a>
     <a href="https://github.com/merrycodes/merrycodes-serve/blob/master/LICENSE">
         <img src="https://img.shields.io/badge/License-MIT-success?style=plastic" alt="License"/>
