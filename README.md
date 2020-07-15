@@ -4,7 +4,7 @@
 
 > ps：图片来源于网络
 
-<p style="text-align: center;">
+<p align="center">
     <a href="https://docs.oracle.com/javase/8/docs/#NewFeature">
         <img src="https://img.shields.io/badge/Java-8-lightgrey?style=plastic&logo=java" alt="Java"/>
     </a>
@@ -18,13 +18,13 @@
          <img src="https://img.shields.io/badge/Swagger UI-2.9.2-blue?style=plastic&logo=swagger" alt="Swagger UI"/>
     </a>
     <a href="https://github.com/alibaba/druid">
-         <img src="https://img.shields.io/badge/Druid-1.1.21-green?style=plastic&logo=apache druid" alt="Druid"/>
+         <img src="https://img.shields.io/badge/Druid-1.1.21-green?style=plastic&logo=apache%20druid" alt="Druid"/>
     </a>
     <a href="https://mp.baomidou.com">
          <img src="https://img.shields.io/badge/MyBatis Plus-3.2.0-yellow?style=plastic" alt="MyBatis Plus"/>
     </a>
     <a href="https://jwt.io">
-        <img src="https://img.shields.io/badge/JWT-0.11.1-9cf?style=plastic&logo=json web tokens" alt="Json Web Tokens"/>
+        <img src="https://img.shields.io/badge/JWT-0.11.1-9cf?style=plastic&logo=json%20web%20tokens" alt="Json Web Tokens"/>
     </a>
     <a href="https://github.com/merrycodes/merrycodes-serve/blob/master/LICENSE">
         <img src="https://img.shields.io/badge/License-MIT-success?style=plastic" alt="License"/>
